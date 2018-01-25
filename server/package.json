@@ -4,13 +4,18 @@
   "description": "Databases project for CS2300",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node src/index.js"
+    "install-client": "cd ../client && npm install",
+    "install-all": "npm install && npm run install-client",
+    "start": "nodemon --exec babel-node src/index.js",
+    "client": "npm start --prefix ../client",
+    "dev": "concurrently 'npm run start' 'npm run client'"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "concurrently": "^3.5.1",
     "eslint": "^4.15.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
@@ -19,9 +24,9 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
     "express": "^4.16.2",
-    "pg": "^6.4.2",
-    "pg-hstore": "^2.3.2",
+    "mysql2": "^1.5.1",
     "sequelize": "^4.31.2"
   }
 }

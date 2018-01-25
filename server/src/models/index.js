@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 
-const sequelize = new Sequelize('test', 'postgres', 'postgres', {
-  dialect: 'postgres',
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
+  dialect: 'mysql',
   operatorsAliases: Sequelize.Op,
 });
 

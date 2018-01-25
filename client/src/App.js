@@ -10,9 +10,9 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    const response = await axios.get('/users/');
-    console.log(response);
+    const response = await axios.get('/api/users/');
     const users = response.data;
+    console.log(users);
     this.onMount(users);
   }
 
@@ -23,7 +23,7 @@ class App extends Component {
   handleButtonClick = async () => {
     const { newUser, users } = this.state;
 
-    const response = await axios.post('/users/', {
+    const response = await axios.post('/api/users/', {
       username: newUser,
     });
 
@@ -48,7 +48,7 @@ class App extends Component {
           value={newUser}
         />
         <button onClick={this.handleButtonClick}>Submit</button>
-        <ul>{users && users.map(user => <li key={user.id}>{user.name}</li>)}</ul>
+        <ul>{users && users.map(user => <li key={user.id}>{user.username}</li>)}</ul>
       </div>
     );
   }
