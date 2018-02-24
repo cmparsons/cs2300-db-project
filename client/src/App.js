@@ -1,5 +1,13 @@
 import React from 'react';
-import Routes from './routes';
+import { Provider } from 'mobx-react';
 
-// TODO: Add mobx or redux for app state management?
-export default () => <Routes />;
+import Routes from './routes';
+import UserStore from './stores/UserStore';
+
+const App = () => (
+  <Provider userStore={UserStore}>
+    <Routes />
+  </Provider>
+);
+
+export default App;
