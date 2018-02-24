@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cmparsons/cs2300-db-project.git"
+    "url": "git+https://github.com/cmparsons/cs2300-project.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cmparsons/cs2300-db-project/issues"
+    "url": "https://github.com/cmparsons/cs2300-project/issues"
   },
-  "homepage": "https://github.com/cmparsons/cs2300-db-project#readme",
+  "homepage": "https://github.com/cmparsons/cs2300-project#readme",
   "devDependencies": {
     "babel-eslint": "^8.2.2",
     "concurrently": "^3.5.1",
