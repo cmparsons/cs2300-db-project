@@ -6,7 +6,7 @@ import Register from './Register';
 import Home from './Home';
 import Login from './Login';
 
-export default () => (
+const Routes = () => (
   <BrowserRouter>
     <div>
       <NavBar />
@@ -21,3 +21,5 @@ export default () => (
     </div>
   </BrowserRouter>
 );
+
+export default Routes;

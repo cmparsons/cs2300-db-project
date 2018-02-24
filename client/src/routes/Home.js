@@ -5,7 +5,7 @@ import { Feed, Icon } from 'semantic-ui-react';
 export default () => (
   <Feed>
     <Feed.Event>
-      <Feed.Label>Image</Feed.Label>
+      <Feed.Label />
       <Feed.Content>
         <Feed.Summary>
           <Feed.User>Elliot Fu</Feed.User> added you as a friend
@@ -21,20 +21,12 @@ export default () => (
     </Feed.Event>
 
     <Feed.Event>
-      <Feed.Label image="/assets/images/avatar/small/helen.jpg" />
+      <Feed.Label />
       <Feed.Content>
         <Feed.Summary>
-          <a>Helen Troy</a> added <a>2 new illustrations</a>
           <Feed.Date>4 days ago</Feed.Date>
         </Feed.Summary>
-        <Feed.Extra images>
-          <a>
-            <img src="/assets/images/wireframe/image.png" />
-          </a>
-          <a>
-            <img src="/assets/images/wireframe/image.png" />
-          </a>
-        </Feed.Extra>
+        <Feed.Extra />
         <Feed.Meta>
           <Feed.Like>
             <Icon name="like" />
@@ -45,7 +37,7 @@ export default () => (
     </Feed.Event>
 
     <Feed.Event>
-      <Feed.Label image="/assets/images/avatar/small/jenny.jpg" />
+      <Feed.Label />
       <Feed.Content>
         <Feed.Summary date="2 Days Ago" user="Jenny Hess" content="add you as a friend" />
         <Feed.Meta>
@@ -58,7 +50,7 @@ export default () => (
     </Feed.Event>
 
     <Feed.Event>
-      <Feed.Label image="/assets/images/avatar/small/joe.jpg" />
+      <Feed.Label />
       <Feed.Content>
         <Feed.Summary>
           <a>Joe Henderson</a> posted on his page
@@ -79,20 +71,13 @@ export default () => (
     </Feed.Event>
 
     <Feed.Event>
-      <Feed.Label image="/assets/images/avatar/small/justen.jpg" />
+      <Feed.Label />
       <Feed.Content>
         <Feed.Summary>
           <a>Justen Kitsune</a> added <a>2 new photos</a> of you
           <Feed.Date>4 days ago</Feed.Date>
         </Feed.Summary>
-        <Feed.Extra images>
-          <a>
-            <img src="/assets/images/wireframe/image.png" />
-          </a>
-          <a>
-            <img src="/assets/images/wireframe/image.png" />
-          </a>
-        </Feed.Extra>
+        <Feed.Extra images />
         <Feed.Meta>
           <Feed.Like>
             <Icon name="like" />
