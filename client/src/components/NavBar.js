@@ -3,6 +3,14 @@ import { withRouter } from 'react-router';
 import { Input, Menu } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
 
+const menuItemStyle = {
+  color: '#EEE',
+};
+
+const menuStyle = {
+  background: '#4267b2',
+};
+
 class NavBar extends React.Component {
   state = {
     activeItem: 'home',
@@ -25,17 +33,24 @@ class NavBar extends React.Component {
     const { activeItem, searchInput } = this.state;
 
     return (
-      <Menu>
-        <Menu.Item name="home" active={activeItem === 'home'} onClick={this.handleItemClick} />
+      <Menu style={menuStyle}>
+        <Menu.Item
+          name="home"
+          active={activeItem === 'home'}
+          onClick={this.handleItemClick}
+          style={menuItemStyle}
+        />
         <Menu.Item
           name="communities"
           active={activeItem === 'communities'}
           onClick={this.handleItemClick}
+          style={menuItemStyle}
         />
         <Menu.Item
           name="trending"
           active={activeItem === 'trending'}
           onClick={this.handleItemClick}
+          style={menuItemStyle}
         />
         <Menu.Menu position="right">
           <Menu.Item>
@@ -48,17 +63,33 @@ class NavBar extends React.Component {
             />
           </Menu.Item>
           {this.props.userStore.isAuthenticated ? (
-            <Menu.Item
-              name="logout"
-              active={activeItem === 'logout'}
-              onClick={this.handleLogoutClick}
-            />
+            <React.Fragment>
+              <Menu.Item
+                content={`Hi, ${this.props.userStore.user.username}!`}
+                style={menuItemStyle}
+              />
+              <Menu.Item
+                name="logout"
+                active={activeItem === 'logout'}
+                onClick={this.handleLogoutClick}
+                style={menuItemStyle}
+              />
+            </React.Fragment>
           ) : (
-            <Menu.Item
-              name="register"
-              active={activeItem === 'register'}
-              onClick={this.handleItemClick}
-            />
+            <React.Fragment>
+              <Menu.Item
+                name="register"
+                active={activeItem === 'register'}
+                onClick={this.handleItemClick}
+                style={menuItemStyle}
+              />
+              <Menu.Item
+                name="login"
+                active={activeItem === 'login'}
+                onClick={this.handleItemClick}
+                style={menuItemStyle}
+              />
+            </React.Fragment>
           )}
         </Menu.Menu>
       </Menu>

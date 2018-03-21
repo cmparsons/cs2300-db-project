@@ -14,6 +14,6 @@ app.use(bodyParser.json());
 
 app.use('/api/users/', users);
 
-models.sequelize.sync({}).then(() => {
+models.sequelize.sync({ force: true }).then(() => {
   app.listen(PORT);
 });

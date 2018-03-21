@@ -1,4 +1,5 @@
 import { extendObservable, action, reaction } from 'mobx';
+import decode from 'jwt-decode';
 
 class UserStore {
   constructor() {
@@ -9,6 +10,14 @@ class UserStore {
       }),
       get isAuthenticated() {
         return !!this.token;
+      },
+      get user() {
+        try {
+          const { user } = decode(this.token);
+          return user;
+        } catch (e) {
+          return null;
+        }
       },
     });
 
