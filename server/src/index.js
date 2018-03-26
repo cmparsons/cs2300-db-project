@@ -3,7 +3,6 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 import './env';
-import models from './models';
 import users from './routes/users';
 
 const app = express();
@@ -14,6 +13,6 @@ app.use(bodyParser.json());
 
 app.use('/api/users/', users);
 
-models.sequelize.sync({ force: true }).then(() => {
-  app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(`server running on port ${PORT}`);
 });
