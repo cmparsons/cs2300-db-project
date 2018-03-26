@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
-import pick from 'lodash/pick';
+// import pick from 'lodash/pick';
 import bcrypt from 'bcrypt';
 import { Op } from 'sequelize';
 
-export const createToken = async (user, secret) => {
+export const createToken = async (userId, secret) => {
   const accessToken = jwt.sign(
     {
-      user: pick(user, ['id', 'username']),
+      userId,
     },
     secret,
     {
