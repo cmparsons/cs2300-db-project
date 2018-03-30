@@ -1,26 +1,29 @@
-import { extendObservable, action, reaction } from 'mobx';
+import { action, reaction, observable, computed } from 'mobx';
 import decode from 'jwt-decode';
 
 class UserStore {
-  constructor() {
-    extendObservable(this, {
-      token: localStorage.getItem('cs2300-token'),
-      setToken: action((token) => {
-        this.token = token;
-      }),
-      get isAuthenticated() {
-        return !!this.token;
-      },
-      get user() {
-        try {
-          const { user } = decode(this.token);
-          return user;
-        } catch (e) {
-          return null;
-        }
-      },
-    });
+  @observable token = localStorage.getItem('cs2300-token');
 
+  @action
+  setToken(token) {
+    this.token = token;
+  }
+
+  @computed
+  get isAuthenticated() {
+    return !!this.token;
+  }
+
+  @computed
+  get user() {
+    try {
+      const { userId } = decode(this.token);
+      return userId;
+    } catch (e) {
+      return null;
+    }
+  }
+  constructor() {
     reaction(
       () => this.token,
       (token) => {
