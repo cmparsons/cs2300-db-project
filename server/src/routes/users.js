@@ -2,9 +2,26 @@ import { Router } from 'express';
 import bcrypt from 'bcrypt';
 
 import knex from '../db';
-import { createToken } from '../utils/auth';
+import { createToken, auth } from '../utils/auth';
 
 const router = Router();
+
+/**
+ *
+ * @param {string} email
+ * @param {string} username If one argument passed, then used as identifer for login.
+ * Otherwise, used as seperate email and password
+ */
+async function getUser(email, username = email) {
+  const user = await knex('user')
+    .join('email', 'user.id', '=', 'email.user_id')
+    .join('user_password', 'user.id', '=', 'user_password.user_id')
+    .first('encrypted', 'user.id')
+    .where('username', username)
+    .orWhere('email', email);
+
+  return user;
+}
 
 /**
  * Create a new user by:
@@ -12,27 +29,34 @@ const router = Router();
  * 2. Inserting email into the email table
  * 3. Inserting the hashed password into the user_password table
  */
-router.post('/', async (req, res) => {
+router.post('/register', async (req, res) => {
   if (!req.body) {
     res.sendStatus(400);
   } else {
     const { username, email, password } = req.body;
 
     try {
-      const encrypted = await bcrypt.hash(password, 10);
+      const user = await getUser(email, username);
 
-      // Insert user into the user table
-      const [userId] = await knex('user').insert({ username });
+      if (!user) {
+        const encrypted = await bcrypt.hash(password, 10);
 
-      // Insert user's email and password in to the email and user_password tables
-      Promise.all([
-        knex('email').insert({ user_id: userId, email }),
-        knex('user_password').insert({ user_id: userId, encrypted }),
-      ]);
+        // Insert user into the user table
+        const [userId] = await knex('user').insert({ username });
 
-      res.json({ token: await createToken(userId, process.env.APP_SECRET) });
+        // Insert user's email and password in to the email and user_password tables
+        Promise.all([
+          knex('email').insert({ user_id: userId, email }),
+          knex('user_password').insert({ user_id: userId, encrypted }),
+        ]);
+
+        res.json({ token: await createToken(userId) });
+      } else {
+        res.status(400).json({ email: 'Email not unique', username: 'Username not unique' });
+      }
     } catch (err) {
-      res.status(400).json(err);
+      console.log(err);
+      res.status(500);
     }
   }
 });
@@ -50,12 +74,7 @@ router.post('/login', async (req, res) => {
     const { identifier, password } = req.body;
 
     // Find first user that matches the email or username
-    const user = await knex('user')
-      .join('email', 'user.id', '=', 'email.user_id')
-      .join('user_password', 'user.id', '=', 'user_password.user_id')
-      .first('encrypted', 'user.id')
-      .where('username', identifier)
-      .orWhere('email', identifier);
+    const user = await getUser(identifier);
 
     if (!user) {
       res.status(400).json({ identifier: 'Invalid username/email' });
@@ -65,9 +84,28 @@ router.post('/login', async (req, res) => {
       if (!match) {
         res.status(400).json({ password: 'Invalid password' });
       } else {
-        res.json({ token: await createToken(user, process.env.APP_SECRET) });
+        res.json({ token: await createToken(user.id) });
       }
     }
+  }
+});
+
+router.get('/me', auth.required, async (req, res) => {
+  try {
+    const user = await knex('user')
+      .join('email', 'user.id', '=', 'email.user_id')
+      .join('user_password', 'user.id', '=', 'user_password.user_id')
+      .first('email', 'username')
+      .where('user.id', req.payload.userId);
+
+    if (!user) {
+      res.status(404);
+    } else {
+      res.json({ user });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500);
   }
 });
 

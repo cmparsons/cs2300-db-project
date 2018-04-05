@@ -1,13 +1,22 @@
 import React from 'react';
 import { Container } from 'semantic-ui-react';
-import { inject } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
+import { Redirect } from 'react-router-dom';
 
 import LoginForm from '../components/LoginForm';
 
-const Login = ({ history, userStore }) => (
-  <Container text>
-    <LoginForm history={history} userStore={userStore} />
-  </Container>
-);
+@inject('authStore')
+@observer
+export default class Login extends React.Component {
+  render() {
+    const { authStore: { isAuthenticated } } = this.props;
 
-export default inject('userStore')(Login);
+    return isAuthenticated ? (
+      <Redirect to="/" />
+    ) : (
+      <Container text>
+        <LoginForm />
+      </Container>
+    );
+  }
+}

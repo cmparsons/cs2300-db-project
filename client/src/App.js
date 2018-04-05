@@ -2,10 +2,10 @@ import React from 'react';
 import { Provider } from 'mobx-react';
 
 import Routes from './routes';
-import UserStore from './stores/UserStore';
+import stores from './stores';
 
 const App = () => (
-  <Provider userStore={UserStore}>
+  <Provider {...stores}>
     <Routes />
   </Provider>
 );

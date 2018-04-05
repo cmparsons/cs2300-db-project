@@ -1,74 +1,60 @@
 import React from 'react';
 import { Form, Message } from 'semantic-ui-react';
-import axios from 'axios';
 import isEmpty from 'lodash/isEmpty';
+import values from 'lodash/values';
+import { observer, inject } from 'mobx-react';
 
 import { validateLogin } from '../utils/validation';
 
+@inject('authStore')
+@observer
 export default class LoginForm extends React.Component {
   state = {
     identifier: '',
     password: '',
-    isSubmitting: false,
-    errors: {},
   };
+
+  componentWillUnmount() {
+    this.props.authStore.clearErrors();
+  }
 
   handleChange = (e) => {
     const { name, value } = e.target;
+    this.props.authStore.clearErrors();
 
-    this.setState({ [name]: value, errors: {} });
+    this.setState({ [name]: value });
   };
 
   handleSubmit = async (e) => {
     const { identifier, password } = this.state;
+    const { authStore } = this.props;
 
-    this.setState({ isSubmitting: true });
     e.preventDefault();
 
     // Make sure all fields are filled in
     const clientErrors = validateLogin(identifier, password);
     if (!isEmpty(clientErrors)) {
-      this.setState({ errors: clientErrors, isSubmitting: false });
+      authStore.setErrors(clientErrors);
       return;
     }
 
-    // Make POST request if client validation passes
-    try {
-      const response = await axios.post('/api/users/login', {
-        identifier,
-        password,
-      });
-
-      // If we receive an OK status from server, login user with token
-      if (response.status === 200) {
-        this.props.userStore.setToken(response.data.token);
-        this.props.history.push('/');
-      }
-    } catch (err) {
-      console.log(err);
-      const serverErrors = {};
-      const { path, message } = err.response.data;
-      serverErrors[path] = message;
-      this.setState({ errors: serverErrors, isSubmitting: false });
-    }
+    // Make POST request to server to login user
+    await authStore.login(identifier, password);
   };
 
   render() {
-    const {
-      identifier, password, isSubmitting, errors,
-    } = this.state;
+    const { identifier, password } = this.state;
 
-    const errorList = [];
-    Object.keys(errors).forEach((key) => {
-      errorList.push(errors[key]);
-    });
+    const { errors, isLoading } = this.props.authStore;
+
+    const errorList = isEmpty(errors) ? [] : values(errors);
 
     return (
       <Form
         className="attached fluid segment"
         onSubmit={this.handleSubmit}
         error={errorList.length > 0}
-        loading={isSubmitting}
+        loading={isLoading}
       >
         <Form.Input
           fluid
@@ -77,7 +63,7 @@ export default class LoginForm extends React.Component {
           placeholder="Username/Email"
           value={identifier}
           autoComplete="off"
-          error={!!errors.identifier}
+          error={errors && !!errors.identifier}
           onChange={this.handleChange}
         />
         <Form.Input
@@ -87,7 +73,7 @@ export default class LoginForm extends React.Component {
           label="Password"
           placeholder="Password"
           value={password}
-          error={!!errors.password}
+          error={errors && !!errors.password}
           onChange={this.handleChange}
         />
         <Form.Button color="blue">Login</Form.Button>

@@ -11,7 +11,10 @@ const menuStyle = {
   background: '#4267b2',
 };
 
-class NavBar extends React.Component {
+@withRouter
+@inject('authStore', 'userStore')
+@observer
+export default class NavBar extends React.Component {
   state = {
     activeItem: 'home',
     searchInput: '',
@@ -23,7 +26,7 @@ class NavBar extends React.Component {
   };
 
   handleLogoutClick = () => {
-    this.props.userStore.logoutUser();
+    this.props.authStore.logoutUser();
     this.props.history.push('/');
   };
 
@@ -62,10 +65,12 @@ class NavBar extends React.Component {
               onChange={this.handleSearchChange}
             />
           </Menu.Item>
-          {this.props.userStore.isAuthenticated ? (
+          {this.props.authStore.isAuthenticated ? (
             <React.Fragment>
               <Menu.Item
-                content={`Hi, ${this.props.userStore.user.username}!`}
+                content={`Hi, ${
+                  this.props.userStore.user ? this.props.userStore.user.username : ''
+                }!`}
                 style={menuItemStyle}
               />
               <Menu.Item
@@ -96,5 +101,3 @@ class NavBar extends React.Component {
     );
   }
 }
-
-export default withRouter(inject('userStore')(observer(NavBar)));
