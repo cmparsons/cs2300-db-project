@@ -7,6 +7,11 @@ import { createToken, auth } from '../utils/auth';
 const router = Router();
 
 /**
+ *  NOTE: We want to perform DB constraint checks before any actions
+ *        because SQL driver doesn't send back error messages nicely
+ */
+
+/**
  *
  * @param {string} email
  * @param {string} username If one argument passed, then used as identifer for login.

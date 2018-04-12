@@ -19,6 +19,7 @@ export const auth = {
     secret: process.env.APP_SECRET,
     userProperty: 'payload',
     credentialsRequired: false,
+    getToken: getTokenFromHeader,
   }),
 };
 
