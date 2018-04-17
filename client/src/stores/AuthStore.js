@@ -87,10 +87,6 @@ class AuthStore {
   deauthenticateUser = () => {
     localStorage.removeItem('cs2300-token');
   };
-
-  logoutUser = () => {
-    this.token = '';
-  };
 }
 
 export default new AuthStore();

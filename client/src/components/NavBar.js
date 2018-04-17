@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router';
 import { Input, Menu } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
+import { NavLink } from 'react-router-dom';
 
 const menuItemStyle = {
   color: '#EEE',
@@ -22,7 +23,6 @@ export default class NavBar extends React.Component {
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name });
-    this.props.history.push(`/${name}`);
   };
 
   handleLogoutClick = () => {
@@ -39,18 +39,24 @@ export default class NavBar extends React.Component {
       <Menu style={menuStyle}>
         <Menu.Item
           name="home"
+          as={NavLink}
+          to="/"
           active={activeItem === 'home'}
           onClick={this.handleItemClick}
           style={menuItemStyle}
         />
         <Menu.Item
           name="communities"
+          as={NavLink}
+          to="/communities"
           active={activeItem === 'communities'}
           onClick={this.handleItemClick}
           style={menuItemStyle}
         />
         <Menu.Item
           name="trending"
+          as={NavLink}
+          to="/trending"
           active={activeItem === 'trending'}
           onClick={this.handleItemClick}
           style={menuItemStyle}
@@ -84,12 +90,16 @@ export default class NavBar extends React.Component {
             <React.Fragment>
               <Menu.Item
                 name="register"
+                as={NavLink}
+                to="/register"
                 active={activeItem === 'register'}
                 onClick={this.handleItemClick}
                 style={menuItemStyle}
               />
               <Menu.Item
                 name="login"
+                as={NavLink}
+                to="/login"
                 active={activeItem === 'login'}
                 onClick={this.handleItemClick}
                 style={menuItemStyle}

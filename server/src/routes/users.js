@@ -36,33 +36,31 @@ async function getUser(email, username = email) {
  */
 router.post('/register', async (req, res) => {
   if (!req.body) {
-    res.sendStatus(400);
-  } else {
-    const { username, email, password } = req.body;
+    return res.sendStatus(400);
+  }
+  const { username, email, password } = req.body;
 
-    try {
-      const user = await getUser(email, username);
+  try {
+    const user = await getUser(email, username);
 
-      if (!user) {
-        const encrypted = await bcrypt.hash(password, 10);
+    if (!user) {
+      const encrypted = await bcrypt.hash(password, 10);
 
-        // Insert user into the user table
-        const [userId] = await knex('user').insert({ username });
+      // Insert user into the user table
+      const [userId] = await knex('user').insert({ username });
 
-        // Insert user's email and password in to the email and user_password tables
-        Promise.all([
-          knex('email').insert({ user_id: userId, email }),
-          knex('user_password').insert({ user_id: userId, encrypted }),
-        ]);
+      // Insert user's email and password in to the email and user_password tables
+      Promise.all([
+        knex('email').insert({ user_id: userId, email }),
+        knex('user_password').insert({ user_id: userId, encrypted }),
+      ]);
 
-        res.json({ token: await createToken(userId) });
-      } else {
-        res.status(400).json({ email: 'Email not unique', username: 'Username not unique' });
-      }
-    } catch (err) {
-      console.log(err);
-      res.status(500);
+      return res.json({ token: await createToken(userId) });
     }
+    return res.status(400).json({ email: 'Email not unique', username: 'Username not unique' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500);
   }
 });
 
@@ -74,25 +72,22 @@ router.post('/register', async (req, res) => {
  */
 router.post('/login', async (req, res) => {
   if (!req.body) {
-    res.sendStatus(400);
-  } else {
-    const { identifier, password } = req.body;
-
-    // Find first user that matches the email or username
-    const user = await getUser(identifier);
-
-    if (!user) {
-      res.status(400).json({ identifier: 'Invalid username/email' });
-    } else {
-      const match = await bcrypt.compare(password, user.encrypted);
-
-      if (!match) {
-        res.status(400).json({ password: 'Invalid password' });
-      } else {
-        res.json({ token: await createToken(user.id) });
-      }
-    }
+    return res.sendStatus(400);
   }
+  const { identifier, password } = req.body;
+
+  // Find first user that matches the email or username
+  const user = await getUser(identifier);
+
+  if (!user) {
+    return res.status(400).json({ identifier: 'Invalid username/email' });
+  }
+  const match = await bcrypt.compare(password, user.encrypted);
+
+  if (!match) {
+    return res.status(400).json({ password: 'Invalid password' });
+  }
+  return res.json({ token: await createToken(user.id) });
 });
 
 router.get('/me', auth.required, async (req, res) => {
@@ -104,13 +99,12 @@ router.get('/me', auth.required, async (req, res) => {
       .where('user.id', req.payload.userId);
 
     if (!user) {
-      res.status(404);
-    } else {
-      res.json({ user });
+      return res.status(404);
     }
+    return res.json({ user });
   } catch (err) {
     console.error(err);
-    res.status(500);
+    return res.status(500);
   }
 });
 

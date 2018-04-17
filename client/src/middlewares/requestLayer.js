@@ -34,4 +34,13 @@ export default class RequestLayer {
       throw err;
     }
   };
+
+  fetchAllCommunities = async () => {
+    try {
+      const response = await axios.get('/api/community');
+      return response.data.communities;
+    } catch (err) {
+      throw err;
+    }
+  };
 }

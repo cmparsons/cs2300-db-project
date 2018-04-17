@@ -6,9 +6,24 @@ import { auth } from '../utils/auth';
 const router = Router();
 
 /**
- *  NOTE: We want to perform DB constraint checks before any actions
- *        because SQL driver doesn't send back error messages nicely
+ * NOTE: We want to perform DB constraint checks before any actions
+ *       because SQL driver doesn't send back error messages nicely
+ *
  */
+
+router.get('/', auth.optional, async (req, res) => {
+  try {
+    // Get all communities and join with users to get the username of the creator
+    const communities = await knex('community')
+      .select('community.id', 'username', 'community.name')
+      .innerJoin('user', 'creator_id', '=', 'user.id');
+
+    return res.json({ communities });
+  } catch (err) {
+    console.log(err);
+    return res.status(500);
+  }
+});
 
 /**
  * Request body:
@@ -29,7 +44,6 @@ router.post('/', auth.optional, async (req, res) => {
     return res.status(400).json({ name: 'Community name required' });
   }
 
-  console.log('trying to insert');
   // Insert into the community table
   try {
     const [communityId] = await knex('community').insert({

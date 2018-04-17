@@ -47,7 +47,7 @@ export function up(knex, Promise) {
           .notNullable()
           .references('id')
           .inTable('user')
-          .onDelete('SET NULL')
+          .onDelete('CASCADE')
           .index();
         table
           .integer('receiver_id')
@@ -55,7 +55,7 @@ export function up(knex, Promise) {
           .notNullable()
           .references('id')
           .inTable('user')
-          .onDelete('SET NULL')
+          .onDelete('CASCADE')
           .index();
         table.timestamps(true, true);
       })
@@ -65,7 +65,6 @@ export function up(knex, Promise) {
         table
           .integer('creator_id')
           .unsigned()
-          .notNullable()
           .references('id')
           .inTable('user')
           .onDelete('SET NULL')
