@@ -26,7 +26,7 @@ export default class NavBar extends React.Component {
   };
 
   handleLogoutClick = () => {
-    this.props.authStore.logoutUser();
+    this.props.authStore.logout();
     this.props.history.push('/');
   };
 

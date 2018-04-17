@@ -14,6 +14,11 @@ class UserStore {
     }
   }
 
+  @action
+  clearUser() {
+    this.user = undefined;
+  }
+
   constructor() {
     this.requestLayer = new RequestLayer();
   }

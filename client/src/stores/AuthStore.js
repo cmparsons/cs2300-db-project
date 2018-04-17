@@ -57,7 +57,6 @@ class AuthStore {
   @action
   logout() {
     this.setToken(undefined);
-    return Promise.resolve();
   }
 
   constructor() {
