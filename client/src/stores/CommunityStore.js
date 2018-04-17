@@ -1,7 +1,8 @@
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, computed } from 'mobx';
 
 import RequestLayer from '../middlewares/requestLayer';
 import TransportLayer from '../middlewares/transportLayer';
+import userStore from './UserStore';
 
 class CommunityStore {
   @observable communities = [];
@@ -11,6 +12,15 @@ class CommunityStore {
   constructor() {
     this.requestLayer = new RequestLayer();
     this.transportLayer = new TransportLayer();
+  }
+
+  /**
+   * Get all communities created by the current logged in user
+   */
+  @computed
+  get myCommunities() {
+    if (!userStore.user || !userStore.user.id) return [];
+    return this.communities.filter(c => c.creatorId === userStore.user.id);
   }
 
   @action

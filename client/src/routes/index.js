@@ -12,7 +12,7 @@ const Routes = () => (
   <BrowserRouter>
     <React.Fragment>
       <NavBar />
-      <Container fluid>
+      <Container>
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/register" component={Register} />

@@ -95,7 +95,7 @@ router.get('/me', auth.required, async (req, res) => {
     const user = await knex('user')
       .join('email', 'user.id', '=', 'email.user_id')
       .join('user_password', 'user.id', '=', 'user_password.user_id')
-      .first('email', 'username')
+      .first('email', 'username', 'id')
       .where('user.id', req.payload.userId);
 
     if (!user) {

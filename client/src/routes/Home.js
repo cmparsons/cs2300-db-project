@@ -1,19 +1,9 @@
 import React from 'react';
-import {
-  Container,
-  Button,
-  Feed,
-  Icon,
-  Grid,
-  List,
-  Divider,
-  Header,
-  Segment,
-} from 'semantic-ui-react';
+import { Button, Feed, Icon, Grid, List, Divider, Header, Segment } from 'semantic-ui-react';
 
 // TODO: Replace with actual component logic. Currently just placeholder.
 export default () => (
-  <Container>
+  <React.Fragment>
     <Grid>
       <Grid.Column width={4}>
         <Header as="h3" attached="top" block>
@@ -193,5 +183,5 @@ export default () => (
         </div>
       </Grid.Column>
     </Grid>
-  </Container>
+  </React.Fragment>
 );

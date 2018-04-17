@@ -15,7 +15,12 @@ router.get('/', auth.optional, async (req, res) => {
   try {
     // Get all communities and join with users to get the username of the creator
     const communities = await knex('community')
-      .select('community.id', 'username', 'community.name')
+      .select(
+        'community.id as id',
+        'username as creator',
+        'creator_id as creatorId',
+        'community.name',
+      )
       .innerJoin('user', 'creator_id', '=', 'user.id');
 
     return res.json({ communities });

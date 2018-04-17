@@ -1,11 +1,11 @@
 import React from 'react';
 import { Icon, List, Segment, Header } from 'semantic-ui-react';
 
-const CommunityList = ({ communities, onCommunityClick }) => (
+const CommunityList = ({ header, communities, onCommunityClick }) => (
   <React.Fragment>
     <Header as="h3" attached="top" block>
       <Icon name="users" />
-      Top Communities
+      {header}
     </Header>
     <Segment attached>
       <List verticalAlign="middle" selection animated>
@@ -17,7 +17,7 @@ const CommunityList = ({ communities, onCommunityClick }) => (
               </List.Content>
             </List.Item>
             ))
-          : null}
+          : 'No communities yet :('}
       </List>
     </Segment>
   </React.Fragment>
