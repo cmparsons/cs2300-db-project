@@ -64,4 +64,24 @@ router.post('/', auth.optional, async (req, res) => {
   }
 });
 
+/**
+ * Request params:
+ *      communityId - id of community to delete
+ *
+ */
+router.delete('/:communityId', async (req, res) => {
+  try {
+    await knex('community')
+      .where('id', req.params.communityId)
+      .del();
+  } catch (err) {
+    // Some system error occured
+    console.log(err);
+    return res.status(500);
+  }
+
+  // Delete was successful
+  return res.status(200).end();
+});
+
 export default router;

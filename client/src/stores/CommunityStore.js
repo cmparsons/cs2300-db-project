@@ -63,6 +63,20 @@ class CommunityStore {
     }
     this.isLoading = false;
   }
+
+  @action
+  async deleteCommunity(id) {
+    const commIdx = this.communities.findIndex(c => c.id === id);
+    if (commIdx !== -1) {
+      this.communities.splice(commIdx, 1);
+      try {
+        await this.transportLayer.deleteCommunity(id);
+      } catch (err) {
+        console.log(err);
+        this.errors = err.response.data;
+      }
+    }
+  }
 }
 
 export default new CommunityStore();

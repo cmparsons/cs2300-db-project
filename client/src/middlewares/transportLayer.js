@@ -39,4 +39,12 @@ export default class TransportLayer {
       throw err;
     }
   };
+
+  deleteCommunity = async (id) => {
+    try {
+      await axios.delete(`/api/community/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  };
 }
