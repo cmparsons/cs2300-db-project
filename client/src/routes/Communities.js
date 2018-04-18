@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Loader } from 'semantic-ui-react';
+import { Button, Grid, Loader } from 'semantic-ui-react';
 import { observer, inject } from 'mobx-react';
 
 import CommunityList from '../components/CommunityList';
@@ -23,6 +23,10 @@ export default class Communities extends Component {
     this.props.history.push(`/community/${id}`);
   };
 
+  handleCreateCommunityClick = () => {
+    this.props.history.push('/create-community');
+  };
+
   render() {
     const { communityStore } = this.props;
 
@@ -32,22 +36,31 @@ export default class Communities extends Component {
     }
 
     return (
-      <Grid container>
-        <Grid.Column width={8}>
-          <CommunityList
-            header="Top Communities"
-            communities={communityStore.communities}
-            onCommunityClick={this.handleCommunityClick}
-          />
-        </Grid.Column>
-        <Grid.Column width={8}>
-          <CommunityList
-            header="My Communities"
-            communities={communityStore.myCommunities}
-            onCommunityClick={this.handleCommunityClick}
-          />
-        </Grid.Column>
-      </Grid>
+      <React.Fragment>
+        <Grid container>
+          <Grid.Column width={8}>
+            <CommunityList
+              header="Top Communities"
+              communities={communityStore.communities}
+              onCommunityClick={this.handleCommunityClick}
+            />
+          </Grid.Column>
+          <Grid.Column width={8}>
+            <CommunityList
+              header="My Communities"
+              communities={communityStore.myCommunities}
+              onCommunityClick={this.handleCommunityClick}
+            />
+            <div style={{ paddingTop: 10 }}>
+              <Button
+                primary
+                content="Create Community"
+                onClick={this.handleCreateCommunityClick}
+              />
+            </div>
+          </Grid.Column>
+        </Grid>
+      </React.Fragment>
     );
   }
 }

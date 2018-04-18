@@ -7,6 +7,7 @@ import Register from './Register';
 import Home from './Home';
 import Login from './Login';
 import Communities from './Communities';
+import CreateCommunity from './CreateCommunity';
 
 const Routes = () => (
   <BrowserRouter>
@@ -18,6 +19,7 @@ const Routes = () => (
           <Route exact path="/register" component={Register} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/communities" component={Communities} />
+          <Route exact path="/create-community" component={CreateCommunity} />
           <Redirect to="/" />
         </Switch>
       </Container>

@@ -8,10 +8,22 @@ class CommunityStore {
   @observable communities = [];
   @observable communityId;
   @observable isLoading = false;
+  @observable name = '';
+  @observable errors = undefined;
 
   constructor() {
     this.requestLayer = new RequestLayer();
     this.transportLayer = new TransportLayer();
+  }
+
+  @action
+  setName(name) {
+    this.name = name;
+  }
+
+  @action
+  clearErrors() {
+    this.errors = undefined;
   }
 
   /**
@@ -40,14 +52,16 @@ class CommunityStore {
 
   @action
   async createCommunity() {
+    this.isLoading = true;
     try {
-      const communityId = await this.transportLayer.createCommunity();
+      const communityId = await this.transportLayer.createCommunity(this.name);
       runInAction(() => {
         this.communityId = communityId;
       });
     } catch (err) {
-      console.log(err);
+      this.errors = err.response.data;
     }
+    this.isLoading = false;
   }
 }
 
