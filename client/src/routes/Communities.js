@@ -24,7 +24,7 @@ export default class Communities extends Component {
   };
 
   /**
-   * Navigate to the CreateCommunity page when user clicks on a community name
+   * Navigate to the CreateCommunity page when user clicks on Create Community button
    */
   handleCreateCommunityClick = () => {
     this.props.history.push('/create-community');

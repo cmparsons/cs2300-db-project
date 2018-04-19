@@ -1,7 +1,7 @@
 import { action, reaction, observable, computed } from 'mobx';
 import RequestLayer from '../middlewares/requestLayer';
 import TransportLayer from '../middlewares/transportLayer';
-import userStore from './UserStore';
+import userStore from './userStore';
 
 class AuthStore {
   @observable token = localStorage.getItem('cs2300-token');

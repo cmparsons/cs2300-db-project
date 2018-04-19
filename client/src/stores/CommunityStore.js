@@ -2,7 +2,8 @@ import { observable, action, runInAction, computed } from 'mobx';
 
 import RequestLayer from '../middlewares/requestLayer';
 import TransportLayer from '../middlewares/transportLayer';
-import userStore from './UserStore';
+import userStore from './userStore';
+import uiStore from './uiStore';
 
 class CommunityStore {
   @observable communities = [];
@@ -46,7 +47,6 @@ class CommunityStore {
     } catch (err) {
       console.log(err);
     }
-
     this.isLoading = false;
   }
 
@@ -57,6 +57,7 @@ class CommunityStore {
       const communityId = await this.transportLayer.createCommunity(this.name);
       runInAction(() => {
         this.communityId = communityId;
+        uiStore.addAlertMessage('Successfully created community!', 'Hot Dog!', 'success');
       });
     } catch (err) {
       this.errors = err.response.data;
