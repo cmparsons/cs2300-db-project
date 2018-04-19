@@ -4,8 +4,8 @@
   "description": "Databases project for CS2300 at Missouri S&T",
   "scripts": {
     "setup": "npm install && cd client && npm install && cd ../server && npm install && cd ..",
-    "yarn-setup": "yarn && cd client && yarn && cd ../server && yarn && cd ..",
-    "dev": "concurrently \"cd server && npm run start\" \"cd client && npm start\""
+    "dev": "concurrently \"cd server && npm run start\" \"cd client && npm start\"",
+    "clean": "rm -rf node_modules && cd client && rm -rf node_modules && cd ../server && rm -rf node_modules && cd .."
   },
   "repository": {
     "type": "git",
