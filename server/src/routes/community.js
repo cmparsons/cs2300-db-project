@@ -1,7 +1,6 @@
 import { Router } from 'express';
 
 import knex from '../db';
-import { auth } from '../utils/auth';
 
 const router = Router();
 
@@ -11,7 +10,7 @@ const router = Router();
  *
  */
 
-router.get('/', auth.optional, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     // Get all communities and join with users to get the username of the creator
     const communities = await knex('community')
@@ -38,7 +37,7 @@ router.get('/', auth.optional, async (req, res) => {
  *    communityId?: id of the community
  *    name?: Error message for the name field
  */
-router.post('/', auth.optional, async (req, res) => {
+router.post('/', async (req, res) => {
   // Client sent a bad request
   if (!req.body) {
     return res.status(400);
@@ -52,7 +51,7 @@ router.post('/', auth.optional, async (req, res) => {
   // Insert into the community table
   try {
     const [communityId] = await knex('community').insert({
-      creator_id: req.payload.userId,
+      creator_id: req.userId,
       name: req.body.name,
     });
 

@@ -2,7 +2,7 @@ import { Router } from 'express';
 import bcrypt from 'bcrypt';
 
 import knex from '../db';
-import { createToken, auth } from '../utils/auth';
+import { createToken } from '../utils/auth';
 
 const router = Router();
 
@@ -90,13 +90,13 @@ router.post('/login', async (req, res) => {
   return res.json({ token: await createToken(user.id) });
 });
 
-router.get('/me', auth.required, async (req, res) => {
+router.get('/me', async (req, res) => {
   try {
     const user = await knex('user')
       .join('email', 'user.id', '=', 'email.user_id')
       .join('user_password', 'user.id', '=', 'user_password.user_id')
       .first('email', 'username', 'id')
-      .where('user.id', req.payload.userId);
+      .where('user.id', req.userId);
 
     if (!user) {
       return res.status(404);
