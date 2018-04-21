@@ -1,6 +1,5 @@
-import jwt from 'jsonwebtoken';
-// import jwt from 'express-jwt';
-// import knex from '../db';
+import jsonwebtoken from 'jsonwebtoken';
+import jwt from 'express-jwt';
 
 /**
  * Get the token from the authorization header
@@ -15,27 +14,19 @@ function getTokenFromHeader(req) {
   return null;
 }
 
-/**
- * Pass userId into the payload from the token if token exists and valid
- * @param {Request} req HTTP request object
- * @param {Response} res HTTP response object
- * @param {next} next HTTP next function
- */
-export async function auth(req, res, next) {
-  const token = getTokenFromHeader(req);
-
-  if (token) {
-    try {
-      const { userId } = await jwt.verify(token, process.env.APP_SECRET);
-      req.userId = userId;
-      next();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  next();
-}
+export const auth = {
+  required: jwt({
+    secret: process.env.APP_SECRET,
+    userProperty: 'payload',
+    getToken: getTokenFromHeader,
+  }),
+  optional: jwt({
+    secret: process.env.APP_SECRET,
+    userProperty: 'payload',
+    credentialsRequired: false,
+    getToken: getTokenFromHeader,
+  }),
+};
 
 /**
  * Create an access token with the userId signed into then token
@@ -43,7 +34,7 @@ export async function auth(req, res, next) {
  * @returns signed access token
  */
 export function createToken(userId) {
-  const accessToken = jwt.sign(
+  const accessToken = jsonwebtoken.sign(
     {
       userId,
     },

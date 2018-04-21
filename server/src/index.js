@@ -6,6 +6,7 @@ import logger from 'morgan';
 import './env';
 import users from './routes/users';
 import community from './routes/community';
+import post from './routes/post';
 
 import { auth } from './utils/auth';
 
@@ -17,11 +18,12 @@ app.use(cors('*')); // Allow any domain to access the resources on our endpoint 
 app.use(bodyParser.json()); // Parse body of requests to JSON format
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(auth);
+app.use(auth.optional);
 
 // Declare endpoint routes
 app.use('/api/users/', users);
 app.use('/api/community/', community);
+app.use('/api/post/', post);
 
 // Start server
 app.listen(PORT, () => {

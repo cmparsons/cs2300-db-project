@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
   // Insert into the community table
   try {
     const [communityId] = await knex('community').insert({
-      creator_id: req.userId,
+      creator_id: req.payload.userId,
       name: req.body.name,
     });
 
