@@ -83,4 +83,64 @@ router.delete('/:communityId', async (req, res) => {
   return res.status(200).end();
 });
 
+/**
+ * Request params:
+ *   communityId: id of community
+ *
+ * Response body:
+ *    posts?: Array of posts of id, poster's username, poster's id, title, and body
+ */
+router.get('/posts/:communityId', async (req, res) => {
+  // Check to make sure the communityId is not null. Send error message if null
+  if (!req.params.communityId) {
+    return res.status(400).json({ communityId: 'No community requested' });
+  }
+
+  try {
+    // Get all posts in the community and join with user table to get poster's username
+    const posts = await knex('post')
+      .select(
+        'post.id',
+        'community_id as communityId',
+        'title',
+        'body',
+        'username as poster',
+        'post.created_at as createdAt',
+      )
+      .where('community_id', req.params.communityId)
+      .innerJoin('user', 'poster_id', '=', 'user.id')
+      .orderBy('post.created_at', 'desc');
+
+    return res.json({ posts });
+  } catch (err) {
+    console.log(err);
+    return res.status(500);
+  }
+});
+
+/**
+ * Response body:
+ *    posts?: Array of posts of id, poster's username, poster's id, title, and body
+ */
+router.get('/posts', async (req, res) => {
+  try {
+    // Get all posts and join with user table to get poster's username
+    const posts = await knex('post')
+      .select(
+        'post.id',
+        'community_id as communityId',
+        'title',
+        'body',
+        'username as poster',
+        'post.created_at as createdAt',
+      )
+      .innerJoin('user', 'poster_id', '=', 'user.id')
+      .orderBy('post.created_at', 'desc');
+
+    return res.json({ posts });
+  } catch (err) {
+    console.log(err);
+    return res.status(500);
+  }
+});
 export default router;

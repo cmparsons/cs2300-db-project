@@ -18,11 +18,12 @@ const Routes = () => (
         <AlertMessageList />
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route exact path="/community/:communityId" component={Home} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/communities" component={Communities} />
           <Route exact path="/create-community" component={CreateCommunity} />
-          <Redirect to="/" />
+          {/* <Redirect to="/" /> */}
         </Switch>
       </Container>
     </React.Fragment>

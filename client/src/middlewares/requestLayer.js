@@ -43,4 +43,22 @@ export default class RequestLayer {
       throw err;
     }
   };
+
+  fetchAllPosts = async () => {
+    try {
+      const response = await axios.get('/api/community/posts');
+      return response.data.posts;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  fetchPostsForCommunity = async (communityId) => {
+    try {
+      const response = await axios.get(`/api/community/posts/${communityId}`);
+      return response.data.posts;
+    } catch (err) {
+      throw err;
+    }
+  };
 }

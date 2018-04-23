@@ -17,6 +17,15 @@ class CommunityStore {
     this.transportLayer = new TransportLayer();
   }
 
+  /**
+   * Get community's name with the passed id
+   * @param {number | undefined} id id of community
+   */
+  getCommunityName(id) {
+    const community = this.communities.find(c => c.id === id);
+    return community ? community.name : 'General';
+  }
+
   @action
   setName(name) {
     this.name = name;
@@ -43,11 +52,14 @@ class CommunityStore {
       const communities = await this.requestLayer.fetchAllCommunities();
       runInAction(() => {
         this.communities = communities;
+        this.isLoading = false;
       });
     } catch (err) {
-      console.log(err);
+      runInAction(() => {
+        console.log(err);
+        this.isLoading = false;
+      });
     }
-    this.isLoading = false;
   }
 
   @action
@@ -60,9 +72,11 @@ class CommunityStore {
         uiStore.addAlertMessage('Successfully created community!', 'Hot Dog!', 'success');
       });
     } catch (err) {
-      this.errors = err.response.data;
+      runInAction(() => {
+        this.errors = err.response.data;
+        this.isLoading = false;
+      });
     }
-    this.isLoading = false;
   }
 
   @action
@@ -73,8 +87,11 @@ class CommunityStore {
       try {
         await this.transportLayer.deleteCommunity(id);
       } catch (err) {
-        console.log(err);
-        this.errors = err.response.data;
+        runInAction(() => {
+          console.log(err);
+          this.errors = err.response.data;
+          this.isLoading = false;
+        });
       }
     }
   }

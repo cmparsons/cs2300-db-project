@@ -23,33 +23,6 @@ async function getCommunityById(communityId) {
 }
 
 /**
- * Request params:
- *   communityId: id of community
- *
- * Response body:
- *    posts?: Array of posts of id, poster's username, poster's id, title, and body
- */
-router.get('/:communityId', async (req, res) => {
-  // Check to make sure the communityId is not null. Send error message if null
-  if (!req.params.communityId) {
-    return res.status(400).json({ communityId: 'No community requested' });
-  }
-
-  try {
-    // Get all posts in the community and join with user table to get poster's username
-    const posts = await knex('post')
-      .select('post.id as id', 'username as poster', 'poster_id as posterId', 'title', 'body')
-      .where('community_id', req.params.communityId)
-      .innerJoin('user', 'poster_id', '=', 'user.id');
-
-    return res.json({ posts });
-  } catch (err) {
-    console.log(err);
-    return res.status(500);
-  }
-});
-
-/**
  * Request body:
  *    name: Name of the community
  *

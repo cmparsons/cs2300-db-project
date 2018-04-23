@@ -16,14 +16,6 @@ export default class Communities extends Component {
   }
 
   /**
-   * Navigate to page of community's posts when user clicks on community
-   * @param id community id
-   */
-  handleCommunityClick = (id) => {
-    this.props.history.push(`/community/${id}`);
-  };
-
-  /**
    * Navigate to the CreateCommunity page when user clicks on Create Community button
    */
   handleCreateCommunityClick = () => {
@@ -60,7 +52,6 @@ export default class Communities extends Component {
             <CommunityList
               header="My Communities"
               communities={communityStore.myCommunities}
-              onCommunityClick={this.handleCommunityClick}
               onDeleteClick={this.handleDeleteCommunityClick}
               showDeleteIcon
             />

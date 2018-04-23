@@ -1,12 +1,9 @@
 import React from 'react';
 import { Icon, List, Segment, Header } from 'semantic-ui-react';
+import Link from 'react-router-dom/Link';
 
 const CommunityList = ({
-  header,
-  communities,
-  onCommunityClick,
-  showDeleteIcon,
-  onDeleteClick,
+  header, communities, showDeleteIcon, onDeleteClick,
 }) => (
   <React.Fragment>
     <Header as="h3" attached="top" block>
@@ -23,7 +20,7 @@ const CommunityList = ({
                 <Icon name="x" />
               </List.Content>
                 )}
-              <List.Content onClick={() => onCommunityClick(c.id)}>
+              <List.Content as={Link} to={`/community/${c.id}`}>
                 <List.Header>{c.name}</List.Header>
               </List.Content>
             </List.Item>
