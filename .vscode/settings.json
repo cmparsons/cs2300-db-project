@@ -1,0 +1,7 @@
+{
+  "prettier.eslintIntegration": true,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true
+}
