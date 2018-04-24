@@ -6,7 +6,7 @@ import values from 'lodash/values';
 
 @inject('postStore')
 @observer
-export default class CreatePost extends Component {
+export default class PostEditor extends Component {
   componentDidMount() {
     const communityId =
       this.props.match.params.communityId && parseInt(this.props.match.params.communityId, 10);
