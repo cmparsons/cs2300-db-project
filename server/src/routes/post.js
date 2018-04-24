@@ -10,6 +10,11 @@ const router = Router();
  *
  */
 
+/**
+ * Query for community by id
+ * @param communityId id of community
+ * @returns community if the community can be found. Otherwise, returns undefined
+ */
 async function getCommunityById(communityId) {
   let community;
   try {
@@ -20,6 +25,23 @@ async function getCommunityById(communityId) {
     console.log(err);
   }
   return community;
+}
+
+/**
+ * Query for a post by its id
+ * @param {string | number} postId id of post
+ * @returns post if the post can be found. Otherwise, returns undefined
+ */
+async function getPostById(postId) {
+  let post;
+  try {
+    post = await knex('post')
+      .first()
+      .where('id', postId);
+  } catch (err) {
+    console.log(err);
+  }
+  return post;
 }
 
 router.get('/:postId', async (req, res) => {
@@ -102,6 +124,63 @@ router.post('/:communityId', async (req, res) => {
   }
 });
 
+/**
+ * Request params:
+ *    postId: id of post to update
+ *
+ * Request body:
+ *    title: title of post (could be unchanged)
+ *    body: title of body (could be unchanged)
+ *
+ * Response body
+ *    title?: Error message for the title field
+ *    body?: Error message for the body field
+ *    postId?: Error message for the postId field
+ */
+router.put('/:postId', async (req, res) => {
+  // Client sent a bad request
+  if (!req.body) {
+    return res.status(400).end();
+  }
+
+  // Check to make sure the postId is not null. Send error message if null
+  if (!req.params.postId) {
+    return res.status(400).json({ postId: 'No community specified' });
+  }
+
+  // Check to make sure the post exists
+  const post = await getPostById(req.params.postId);
+
+  if (!post) {
+    return res.status(404).json({ postId: 'No post found' });
+  }
+
+  // Check to make sure the title is not null. Send error message if null
+  if (!req.body.title) {
+    return res.status(400).json({ title: 'Title is required' });
+  }
+
+  // Check to make sure the body is not null. Send error message if null
+  if (!req.body.body) {
+    return res.status(400).json({ body: 'Body is required' });
+  }
+
+  // Update post in the post table
+  try {
+    await knex('post')
+      .where('id', '=', req.params.postId)
+      .update({
+        title: req.body.title,
+        body: req.body.body,
+      });
+
+    return res.status(200).end();
+  } catch (err) {
+    // Some system error occurred
+    console.log(err);
+    return res.status(500).end();
+  }
+});
 /**
  * Request params:
  *      postId - id of post to delete
