@@ -9,6 +9,7 @@ import Home from './Home';
 import Login from './Login';
 import Communities from './Communities';
 import CreateCommunity from './CreateCommunity';
+import PostEditor from './PostEditor';
 
 const Routes = () => (
   <BrowserRouter>
@@ -23,6 +24,7 @@ const Routes = () => (
           <Route exact path="/login" component={Login} />
           <Route exact path="/communities" component={Communities} />
           <Route exact path="/create-community" component={CreateCommunity} />
+          <Route exact path="/post-editor/:communityId/:postId?" component={PostEditor} />
           {/* <Redirect to="/" /> */}
         </Switch>
       </Container>

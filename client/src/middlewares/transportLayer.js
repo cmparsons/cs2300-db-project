@@ -47,4 +47,16 @@ export default class TransportLayer {
       throw err;
     }
   };
+
+  createPost = async (post, communityId) => {
+    try {
+      const response = await axios.post(`/api/post/${communityId}`, {
+        ...post,
+      });
+
+      return response.data.postId;
+    } catch (err) {
+      throw err;
+    }
+  };
 }

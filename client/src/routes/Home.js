@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Button, Icon, Grid, List, Header, Segment } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
+import { Link } from 'react-router-dom';
 
 import PostsList from '../components/PostsList';
 
@@ -114,9 +115,11 @@ export default class Home extends Component {
                 </List.Item>
               </List>
             </Segment>
-            <div style={{ paddingTop: 10 }}>
-              <Button primary content="Make Post" />
-            </div>
+            {communityId && (
+              <div style={{ paddingTop: 10 }}>
+                <Button primary content="Make Post" as={Link} to={`/post-editor/${communityId}`} />
+              </div>
+            )}
           </Grid.Column>
         </Grid>
       </Fragment>
