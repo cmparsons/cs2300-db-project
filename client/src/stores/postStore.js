@@ -9,6 +9,7 @@ class PostStore {
   @observable isLoading = false;
   @observable errors;
   @observable communityId;
+  @observable currentPost;
 
   @observable title = '';
   @observable body = '';
@@ -41,6 +42,29 @@ class PostStore {
   }
 
   @action
+  async loadPost(postId) {
+    const post = this.posts.find(p => p.id === postId);
+    if (post) {
+      this.currentPost = post;
+    } else {
+      this.isLoading = true;
+      try {
+        const fetchedPost = await this.requestLayer.fetchPost(postId);
+        runInAction(() => {
+          this.currentPost = fetchedPost;
+          this.posts.push(fetchedPost);
+          this.isLoading = false;
+        });
+      } catch (err) {
+        runInAction(() => {
+          console.log(err);
+          this.isLoading = false;
+        });
+      }
+    }
+  }
+
+  @action
   async createPost() {
     const post = {
       title: this.title,
@@ -67,6 +91,28 @@ class PostStore {
         );
       });
       return postId;
+    }
+  }
+
+  @action.bound
+  async deletePost(postId) {
+    const postIdx = this.posts.findIndex(p => p.id === postId);
+    if (postIdx !== -1) {
+      this.posts.splice(postIdx, 1);
+      try {
+        await this.transportLayer.deletePost(postId);
+        uiStore.addAlertMessage('Success!', 'Successfully deleted post!', 'success');
+      } catch (err) {
+        runInAction(() => {
+          console.log(err);
+          this.fetchAllPosts();
+          uiStore.addAlertMessage(
+            'Uh-oh!',
+            'Something happened and your post could not be deleted!',
+            'negative',
+          );
+        });
+      }
     }
   }
 

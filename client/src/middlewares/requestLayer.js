@@ -61,4 +61,13 @@ export default class RequestLayer {
       throw err;
     }
   };
+
+  fetchPost = async (postId) => {
+    try {
+      const response = await axios.get(`/api/post/${postId}`);
+      return response.data.post;
+    } catch (err) {
+      throw err;
+    }
+  };
 }

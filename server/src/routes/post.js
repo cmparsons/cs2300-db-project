@@ -22,6 +22,31 @@ async function getCommunityById(communityId) {
   return community;
 }
 
+router.get('/:postId', async (req, res) => {
+  if (!req.params.postId) {
+    return res.status(400).json({ postId: 'No post specified' });
+  }
+
+  try {
+    const post = await knex('post')
+      .first(
+        'post.id',
+        'community_id as communityId',
+        'title',
+        'body',
+        'username as poster',
+        'post.created_at as createdAt',
+      )
+      .where('post.id', req.params.postId)
+      .innerJoin('user', 'poster_id', '=', 'user.id');
+
+    return res.json({ post });
+  } catch (err) {
+    console.log(err);
+    return res.status(500);
+  }
+});
+
 /**
  * Request body:
  *    name: Name of the community

@@ -10,6 +10,7 @@ import Login from './Login';
 import Communities from './Communities';
 import CreateCommunity from './CreateCommunity';
 import PostEditor from './PostEditor';
+import Post from './Post';
 
 const Routes = () => (
   <BrowserRouter>
@@ -20,6 +21,7 @@ const Routes = () => (
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/community/:communityId" component={Home} />
+          <Route exact path="/community/:communityId/:postId" component={Post} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/communities" component={Communities} />
