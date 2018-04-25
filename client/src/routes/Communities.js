@@ -43,7 +43,7 @@ export default class Communities extends Component {
         <Grid container>
           <Grid.Column width={8}>
             <CommunityList
-              header="Top Communities"
+              header="Communities"
               communities={communityStore.communities}
               onCommunityClick={this.handleCommunityClick}
             />

@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
 import PostsList from '../components/PostsList';
+import LeaderboardList from '../components/LeaderboardList';
 
 @inject('communityStore', 'postStore')
 @observer
@@ -34,7 +35,7 @@ export default class Home extends Component {
   render() {
     const communityId =
       this.props.match.params.communityId && parseInt(this.props.match.params.communityId, 10);
-    const { isFetching, isLoading } = this.props.communityStore;
+    const { isFetching, isLoading, topCommunitiesLeaderboard } = this.props.communityStore;
 
     if (isFetching || isLoading) {
       return <Loader />;
@@ -44,29 +45,12 @@ export default class Home extends Component {
       <Fragment>
         <Grid>
           <Grid.Column width={4}>
-            <Header as="h3" attached="top" block>
-              <Icon color="red" name="fire" />
-              Top Communities
-            </Header>
-            <Segment attached>
-              <List divided verticalAlign="middle">
-                <List.Item>
-                  <List.Content>
-                    <List.Header as="a">Daniel Louise</List.Header>
-                  </List.Content>
-                </List.Item>
-                <List.Item>
-                  <List.Content>
-                    <List.Header as="a">Stevie Feliciano</List.Header>
-                  </List.Content>
-                </List.Item>
-                <List.Item>
-                  <List.Content>
-                    <List.Header as="a">Elliot Fu</List.Header>
-                  </List.Content>
-                </List.Item>
-              </List>
-            </Segment>
+            <LeaderboardList
+              header="Top Communities"
+              icon="fire"
+              iconColor="red"
+              items={topCommunitiesLeaderboard}
+            />
           </Grid.Column>
           <Grid.Column width={8}>
             <PostsList

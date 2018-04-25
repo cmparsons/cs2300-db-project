@@ -51,6 +51,23 @@ class CommunityStore {
     return this.communities.filter(c => c.creatorId === userStore.user.id);
   }
 
+  /**
+   * Get the top 3 communities with most posts
+   */
+  @computed
+  get topCommunitiesLeaderboard() {
+    const topCommunities = this.communities
+      .filter(c => c.postCount > 0)
+      .sort((a, b) => a.postCount < b.postCount)
+      .slice(0, 3);
+
+    return topCommunities.map(community => ({
+      id: community.id,
+      header: community.name,
+      route: `/community/${community.id}`,
+    }));
+  }
+
   @action
   async fetchAllCommunities() {
     try {
@@ -76,6 +93,7 @@ class CommunityStore {
       runInAction(() => {
         this.communityId = communityId;
         uiStore.addAlertMessage('Successfully created community!', 'Hot Dog!', 'success');
+        this.isLoading = false;
       });
     } catch (err) {
       runInAction(() => {
