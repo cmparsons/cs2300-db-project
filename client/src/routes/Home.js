@@ -38,7 +38,7 @@ export default class Home extends Component {
     const { isFetching, isLoading, topCommunitiesLeaderboard } = this.props.communityStore;
 
     if (isFetching || isLoading) {
-      return <Loader />;
+      return <Loader active />;
     }
 
     return (

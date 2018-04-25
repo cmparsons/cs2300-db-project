@@ -35,7 +35,7 @@ export default class Communities extends Component {
 
     // We are currently fetching data from server, so show loader in the meantime
     if (communityStore.isFetching) {
-      return <Loader />;
+      return <Loader active />;
     }
 
     return (

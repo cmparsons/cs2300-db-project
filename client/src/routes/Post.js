@@ -44,7 +44,7 @@ export default class Post extends Component {
     const { communityId, postId } = this.props.match.params;
 
     if (isLoading) {
-      return <Loader />;
+      return <Loader active />;
     }
 
     if (!currentPost) {
