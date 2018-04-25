@@ -60,8 +60,6 @@ router.get('/:postId', async (req, res) => {
   try {
     const post = await getPostById(req.params.postId);
 
-    console.log(post);
-
     return res.json({ post });
   } catch (err) {
     console.log(err);

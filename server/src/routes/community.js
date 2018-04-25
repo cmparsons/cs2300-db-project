@@ -20,7 +20,10 @@ router.get('/', async (req, res) => {
         'creator_id as creatorId',
         'community.name',
       )
-      .innerJoin('user', 'creator_id', '=', 'user.id');
+      .innerJoin('user', 'creator_id', '=', 'user.id')
+      .leftJoin('post', 'community.id', '=', 'post.community_id')
+      .groupBy('community.id')
+      .count('post.id as postCount');
 
     return res.json({ communities });
   } catch (err) {
