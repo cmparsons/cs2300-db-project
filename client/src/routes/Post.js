@@ -1,7 +1,26 @@
 import React, { Component, Fragment } from 'react';
-import { Item, Button, Divider, Loader } from 'semantic-ui-react';
+import { Item, Button, Divider, Loader, Comment, Header, Form } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
+
+import CommentsList from '../components/CommentsList';
+
+const comments = [
+  {
+    commentId: 1,
+    postId: 1,
+    username: 'Dummy User',
+    createdAt: new Date(),
+    body: 'dummy comment text',
+  },
+  {
+    commentId: 2,
+    postId: 1,
+    username: 'Dummy User2',
+    createdAt: new Date(),
+    body: 'dummy comment text2',
+  },
+];
 
 @inject('postStore', 'userStore')
 @observer
@@ -64,6 +83,20 @@ export default class Post extends Component {
           </Item>
         </Item.Group>
         <Divider section />
+        <Comment.Group>
+          <Header as="h3" dividing>
+            Comments
+          </Header>
+          {comments && comments.length > 0 ? (
+            <CommentsList comments={comments} />
+          ) : (
+            <p>No comments yet...</p>
+          )}
+          <Form reply>
+            <Form.TextArea />
+            <Button content="Add Reply" labelPosition="left" icon="edit" primary />
+          </Form>
+        </Comment.Group>
       </Fragment>
     );
   }
