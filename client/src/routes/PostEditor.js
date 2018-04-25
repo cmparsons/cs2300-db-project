@@ -7,10 +7,15 @@ import values from 'lodash/values';
 @inject('postStore')
 @observer
 export default class PostEditor extends Component {
-  componentDidMount() {
+  async componentDidMount() {
     const communityId =
       this.props.match.params.communityId && parseInt(this.props.match.params.communityId, 10);
+    const postId = this.props.match.params.postId && parseInt(this.props.match.params.postId, 10);
     this.props.postStore.setCommunity(communityId);
+
+    if (postId) {
+      await this.props.postStore.loadPostData(postId);
+    }
   }
 
   componentWillUnmount() {
@@ -27,9 +32,11 @@ export default class PostEditor extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const postId = await this.props.postStore.createPost();
-    if (postId) {
-      this.props.history.push(`/community/${this.props.match.params.communityId}/${postId}`);
+    const postId = this.props.match.params.postId && parseInt(this.props.match.params.postId, 10);
+    await this.props.postStore.submitPost(postId);
+    if (!this.props.postStore.errors) {
+      this.props.history.push(`/community/${this.props.match.params.communityId}/${postId ||
+          this.props.postStore.currentPost.id}`);
     }
   };
   render() {
@@ -37,6 +44,7 @@ export default class PostEditor extends Component {
       title, body, errors, isLoading,
     } = this.props.postStore;
     const errorList = isEmpty(errors) ? [] : values(errors);
+    const isNewPost = !this.props.match.params.postId;
 
     return (
       <Form
@@ -65,7 +73,7 @@ export default class PostEditor extends Component {
           error={errors && !!errors.body}
           onChange={this.handleBodyChange}
         />
-        <Form.Button color="blue">Create Post</Form.Button>
+        <Form.Button color="blue">{isNewPost ? 'Create Post' : 'Update Post'}</Form.Button>
         {!!errorList.length && (
           <Message error header="There was some errors with your submission" list={errorList} />
         )}

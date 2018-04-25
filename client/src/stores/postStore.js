@@ -35,15 +35,40 @@ class PostStore {
   }
 
   @action
-  reset() {
-    this.title = '';
-    this.body = '';
+  clearErrors() {
     this.errors = undefined;
   }
 
   @action
+  reset() {
+    this.title = '';
+    this.body = '';
+    this.clearErrors();
+    this.currentPost = undefined;
+  }
+
+  getPost(id) {
+    return this.posts.find(p => p.id === id);
+  }
+
+  @action
+  async loadPostData(postId) {
+    const post = this.getPost(postId);
+    if (post) {
+      this.setTitle(post.title);
+      this.setBody(post.body);
+    } else {
+      await this.loadPost(postId);
+      runInAction(() => {
+        this.setTitle(this.currentPost.title);
+        this.setBody(this.currentPost.body);
+      });
+    }
+  }
+
+  @action
   async loadPost(postId) {
-    const post = this.posts.find(p => p.id === postId);
+    const post = this.getPost(postId);
     if (post) {
       this.currentPost = post;
     } else {
@@ -66,31 +91,70 @@ class PostStore {
 
   @action
   async createPost() {
-    const post = {
-      title: this.title,
-      body: this.body,
-    };
-    let postId;
     try {
       this.isLoading = true;
-      postId = await this.transportLayer.createPost(post, this.communityId);
+      const post = await this.transportLayer.createPost(
+        { title: this.title, body: this.body },
+        this.communityId,
+      );
       runInAction(() => {
+        this.posts.push(post);
+        this.currentPost = post;
         this.isLoading = false;
         uiStore.addAlertMessage('Successfully created post!', 'Hot Dog!', 'success');
       });
-      return postId;
     } catch (err) {
       runInAction(() => {
         console.log(err);
         this.isLoading = false;
-        this.errors = err.response.data;
+        this.errors = err && err.response && err.response.data;
         uiStore.addAlertMessage(
           'Uh-oh!',
           'Something happened and your post could not be created!',
           'negative',
         );
       });
-      return postId;
+    }
+  }
+
+  @action
+  async updatePost(postId) {
+    let post = this.getPost(postId);
+    if (post) {
+      try {
+        this.isLoading = true;
+        await this.transportLayer.updatePost({ title: this.title, body: this.body }, postId);
+        runInAction(() => {
+          post = {
+            ...post,
+            title: this.title,
+            body: this.body,
+          };
+          this.currentPost = post;
+          this.isLoading = false;
+          uiStore.addAlertMessage('Successfully updated post!', 'Hot Dog!', 'success');
+        });
+      } catch (err) {
+        runInAction(() => {
+          console.log(err);
+          this.isLoading = false;
+          this.errors = err && err.response && err.response.data;
+          uiStore.addAlertMessage(
+            'Uh-oh!',
+            'Something happened and your post could not be updated!',
+            'negative',
+          );
+        });
+      }
+    }
+  }
+
+  @action
+  async submitPost(postId) {
+    if (postId) {
+      await this.updatePost(postId);
+    } else {
+      await this.createPost();
     }
   }
 
@@ -103,14 +167,16 @@ class PostStore {
         await this.transportLayer.deletePost(postId);
         uiStore.addAlertMessage('Success!', 'Successfully deleted post!', 'success');
       } catch (err) {
-        runInAction(() => {
+        runInAction(async () => {
           console.log(err);
-          this.fetchAllPosts();
+          this.isLoading = true;
+          await this.fetchAllPosts();
           uiStore.addAlertMessage(
             'Uh-oh!',
             'Something happened and your post could not be deleted!',
             'negative',
           );
+          this.isLoading = false;
         });
       }
     }

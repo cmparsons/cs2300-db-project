@@ -9,12 +9,18 @@ class CommunityStore {
   @observable communities = [];
   @observable communityId;
   @observable isLoading = false;
+  @observable isFetching = false;
   @observable name = '';
   @observable errors = undefined;
 
   constructor() {
     this.requestLayer = new RequestLayer();
     this.transportLayer = new TransportLayer();
+
+    this.isLoading = true;
+    this.fetchAllCommunities().finally(() => {
+      this.isLoading = false;
+    });
   }
 
   /**
@@ -48,16 +54,16 @@ class CommunityStore {
   @action
   async fetchAllCommunities() {
     try {
-      this.isLoading = true;
+      this.isFetching = true;
       const communities = await this.requestLayer.fetchAllCommunities();
       runInAction(() => {
         this.communities = communities;
-        this.isLoading = false;
+        this.isFetching = false;
       });
     } catch (err) {
       runInAction(() => {
         console.log(err);
-        this.isLoading = false;
+        this.isFetching = false;
       });
     }
   }

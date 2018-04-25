@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Button, Icon, Grid, List, Header, Segment } from 'semantic-ui-react';
+import { Button, Icon, Grid, List, Header, Segment, Loader } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ export default class Home extends Component {
 
   async componentDidUpdate(prevProps) {
     // If the community route changes, we should load new posts from a different community
-    if (JSON.stringify(this.props.match.params) !== JSON.stringify(prevProps.match.params)) {
+    if (this.props.match.params.communityId !== prevProps.match.params.communityId) {
       const communityId =
         this.props.match.params.communityId && parseInt(this.props.match.params.communityId, 10);
       if (communityId) {
@@ -34,6 +34,12 @@ export default class Home extends Component {
   render() {
     const communityId =
       this.props.match.params.communityId && parseInt(this.props.match.params.communityId, 10);
+    const { isFetching, isLoading } = this.props.communityStore;
+
+    if (isFetching || isLoading) {
+      return <Loader />;
+    }
+
     return (
       <Fragment>
         <Grid>

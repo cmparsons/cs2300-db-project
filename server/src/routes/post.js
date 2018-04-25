@@ -36,8 +36,16 @@ async function getPostById(postId) {
   let post;
   try {
     post = await knex('post')
-      .first()
-      .where('id', postId);
+      .first(
+        'post.id',
+        'community_id as communityId',
+        'title',
+        'body',
+        'username as poster',
+        'post.created_at as createdAt',
+      )
+      .where('post.id', postId)
+      .innerJoin('user', 'poster_id', 'user.id');
   } catch (err) {
     console.log(err);
   }
@@ -50,17 +58,9 @@ router.get('/:postId', async (req, res) => {
   }
 
   try {
-    const post = await knex('post')
-      .first(
-        'post.id',
-        'community_id as communityId',
-        'title',
-        'body',
-        'username as poster',
-        'post.created_at as createdAt',
-      )
-      .where('post.id', req.params.postId)
-      .innerJoin('user', 'poster_id', '=', 'user.id');
+    const post = await getPostById(req.params.postId);
+
+    console.log(post);
 
     return res.json({ post });
   } catch (err) {
@@ -116,7 +116,7 @@ router.post('/:communityId', async (req, res) => {
       body: req.body.body,
     });
 
-    return res.status(200).json({ postId });
+    return res.status(200).json({ post: await getPostById(postId) });
   } catch (err) {
     // Some system error occurred
     console.log(err);

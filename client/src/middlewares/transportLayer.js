@@ -54,7 +54,7 @@ export default class TransportLayer {
         ...post,
       });
 
-      return response.data.postId;
+      return response.data.post;
     } catch (err) {
       throw err;
     }
@@ -63,6 +63,16 @@ export default class TransportLayer {
   deletePost = async (id) => {
     try {
       await axios.delete(`/api/post/${id}`);
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  updatePost = async (post, postId) => {
+    try {
+      await axios.put(`/api/post/${postId}`, {
+        ...post,
+      });
     } catch (err) {
       throw err;
     }

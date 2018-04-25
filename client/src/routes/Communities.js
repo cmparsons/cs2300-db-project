@@ -34,7 +34,7 @@ export default class Communities extends Component {
     const { communityStore } = this.props;
 
     // We are currently fetching data from server, so show loader in the meantime
-    if (communityStore.isLoading) {
+    if (communityStore.isFetching) {
       return <Loader />;
     }
 
