@@ -6,13 +6,14 @@ export default function PostList(props) {
   const posts = props.posts.length ? (
     <Card.Group>
       {props.posts.map(post => (
-        <Card fluid key={`post-${post.id}`}>
+        <Card
+          fluid
+          key={`post-${post.id}`}
+          as={Link}
+          to={`/community/${post.communityId}/${post.id}`}
+        >
           <Card.Content>
-            <Card.Header
-              as={Link}
-              to={`/community/${post.communityId}/${post.id}`}
-              content={post.title}
-            />
+            <Card.Header content={post.title} />
             <Card.Meta content={`${post.poster} ${new Date(post.createdAt).toDateString()}`} />
             <Card.Description content={post.body} />
             {post.url && (
@@ -21,12 +22,7 @@ export default function PostList(props) {
               </div>
             )}
           </Card.Content>
-          <Card.Content
-            textAlign="right"
-            extra
-            as={Link}
-            to={`/community/${post.communityId}/${post.id}`}
-          >
+          <Card.Content textAlign="right" extra>
             <Icon color="blue" name="comments" /> 121 Comments
           </Card.Content>
         </Card>
