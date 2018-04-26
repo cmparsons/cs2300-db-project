@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import knex from '../db';
+import { getCommunityById } from '../db/community';
 
 const router = Router();
 
@@ -9,6 +10,17 @@ const router = Router();
  *       because SQL driver doesn't send back error messages nicely
  *
  */
+
+// router.get('/:communityId', async (req, res) => {
+//   try {
+//     const comm = await getCommunityById(req.params.communityId);
+
+//     return res.json({ comm });
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500);
+//   }
+// });
 
 router.get('/', async (req, res) => {
   try {
@@ -58,7 +70,7 @@ router.post('/', async (req, res) => {
       name: req.body.name,
     });
 
-    return res.status(200).json({ communityId });
+    return res.status(200).json({ community: await getCommunityById(communityId) });
   } catch (err) {
     // Some system error occurred
     console.log(err);
@@ -121,29 +133,4 @@ router.get('/posts/:communityId', async (req, res) => {
   }
 });
 
-/**
- * Response body:
- *    posts?: Array of posts of id, poster's username, poster's id, title, and body
- */
-router.get('/posts', async (req, res) => {
-  try {
-    // Get all posts and join with user table to get poster's username
-    const posts = await knex('post')
-      .select(
-        'post.id',
-        'community_id as communityId',
-        'title',
-        'body',
-        'username as poster',
-        'post.created_at as createdAt',
-      )
-      .innerJoin('user', 'poster_id', '=', 'user.id')
-      .orderBy('post.created_at', 'desc');
-
-    return res.json({ posts });
-  } catch (err) {
-    console.log(err);
-    return res.status(500);
-  }
-});
 export default router;

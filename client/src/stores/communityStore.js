@@ -89,9 +89,10 @@ class CommunityStore {
   async createCommunity() {
     this.isLoading = true;
     try {
-      const communityId = await this.transportLayer.createCommunity(this.name);
+      const community = await this.transportLayer.createCommunity(this.name);
       runInAction(() => {
-        this.communityId = communityId;
+        this.communityId = community.id;
+        this.communities.push(community);
         uiStore.addAlertMessage('Successfully created community!', 'Hot Dog!', 'success');
         this.isLoading = false;
       });

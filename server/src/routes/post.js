@@ -1,6 +1,8 @@
 import { Router } from 'express';
 
 import knex from '../db';
+import { getCommunityById } from '../db/community';
+import { getPostById } from '../db/post';
 
 const router = Router();
 
@@ -11,32 +13,14 @@ const router = Router();
  */
 
 /**
- * Query for community by id
- * @param communityId id of community
- * @returns community if the community can be found. Otherwise, returns undefined
+ * Response body:
+ *    posts?: Array of posts of id, poster's username, poster's id, title, and body
  */
-async function getCommunityById(communityId) {
-  let community;
+router.get('/', async (req, res) => {
   try {
-    community = await knex('community')
-      .first()
-      .where('id', communityId);
-  } catch (err) {
-    console.log(err);
-  }
-  return community;
-}
-
-/**
- * Query for a post by its id
- * @param {string | number} postId id of post
- * @returns post if the post can be found. Otherwise, returns undefined
- */
-async function getPostById(postId) {
-  let post;
-  try {
-    post = await knex('post')
-      .first(
+    // Get all posts and join with user table to get poster's username
+    const posts = await knex('post')
+      .select(
         'post.id',
         'community_id as communityId',
         'title',
@@ -44,13 +28,15 @@ async function getPostById(postId) {
         'username as poster',
         'post.created_at as createdAt',
       )
-      .where('post.id', postId)
-      .innerJoin('user', 'poster_id', 'user.id');
+      .innerJoin('user', 'poster_id', '=', 'user.id')
+      .orderBy('post.created_at', 'desc');
+
+    return res.json({ posts });
   } catch (err) {
     console.log(err);
+    return res.status(500);
   }
-  return post;
-}
+});
 
 router.get('/:postId', async (req, res) => {
   if (!req.params.postId) {

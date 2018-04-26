@@ -34,7 +34,7 @@ export default class TransportLayer {
         name,
       });
 
-      return response.data.communityId;
+      return response.data.community;
     } catch (err) {
       throw err;
     }
