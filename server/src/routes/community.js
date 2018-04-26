@@ -121,9 +121,11 @@ router.get('/posts/:communityId', async (req, res) => {
         'body',
         'username as poster',
         'post.created_at as createdAt',
+        'url',
       )
       .where('community_id', req.params.communityId)
       .innerJoin('user', 'poster_id', '=', 'user.id')
+      .leftJoin('image_post', 'post_id', '=', 'post.id')
       .orderBy('post.created_at', 'desc');
 
     return res.json({ posts });

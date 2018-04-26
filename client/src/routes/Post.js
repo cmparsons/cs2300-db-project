@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Item, Button, Divider, Loader, Comment, Header, Form } from 'semantic-ui-react';
+import { Card, Button, Divider, Loader, Comment, Header, Form, Image } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
@@ -53,35 +53,40 @@ export default class Post extends Component {
 
     return (
       <Fragment>
-        <Item.Group>
-          <Item>
-            <Item.Content>
-              <Item.Header content={currentPost.title} />
-              <Item.Meta
+        <Card.Group>
+          <Card fluid>
+            <Card.Content>
+              <Card.Header content={currentPost.title} />
+              <Card.Meta
                 content={`${currentPost.poster} ${new Date(currentPost.createdAt).toDateString()}`}
               />
-              <Item.Description content={currentPost.body} />
-              {user &&
-                user.username === currentPost.poster && (
-                  <Item.Extra>
-                    <Button
-                      color="red"
-                      floated="right"
-                      content="Delete"
-                      onClick={this.handleDeleteClick}
-                    />
-                    <Button
-                      secondary
-                      as={Link}
-                      to={`/post-editor/${communityId}/${postId}`}
-                      floated="right"
-                      content="Edit"
-                    />
-                  </Item.Extra>
-                )}
-            </Item.Content>
-          </Item>
-        </Item.Group>
+              <Card.Description content={currentPost.body} />
+              {currentPost.url && (
+                <div style={{ padding: 10 }}>
+                  <Image src={currentPost.url} size="medium" centered />
+                </div>
+              )}
+            </Card.Content>
+            {user &&
+              user.username === currentPost.poster && (
+                <Card.Content extra>
+                  <Button
+                    color="red"
+                    floated="right"
+                    content="Delete"
+                    onClick={this.handleDeleteClick}
+                  />
+                  <Button
+                    secondary
+                    as={Link}
+                    to={`/post-editor/${communityId}/${postId}`}
+                    floated="right"
+                    content="Edit"
+                  />
+                </Card.Content>
+              )}
+          </Card>
+        </Card.Group>
         <Divider section />
         <Comment.Group>
           <Header as="h3" dividing>

@@ -13,6 +13,7 @@ class PostStore {
 
   @observable title = '';
   @observable body = '';
+  @observable url = '';
 
   constructor() {
     this.requestLayer = new RequestLayer();
@@ -35,6 +36,11 @@ class PostStore {
   }
 
   @action
+  setUrl(url) {
+    this.url = url;
+  }
+
+  @action
   clearErrors() {
     this.errors = undefined;
   }
@@ -43,6 +49,7 @@ class PostStore {
   reset() {
     this.title = '';
     this.body = '';
+    this.url = '';
     this.clearErrors();
     this.currentPost = undefined;
   }
@@ -57,11 +64,13 @@ class PostStore {
     if (post) {
       this.setTitle(post.title);
       this.setBody(post.body);
+      this.setUrl(post.url);
     } else {
       await this.loadPost(postId);
       runInAction(() => {
         this.setTitle(this.currentPost.title);
         this.setBody(this.currentPost.body);
+        this.setUrl(this.currentPost.url);
       });
     }
   }
@@ -94,7 +103,7 @@ class PostStore {
     try {
       this.isLoading = true;
       const post = await this.transportLayer.createPost(
-        { title: this.title, body: this.body },
+        { title: this.title, body: this.body, url: this.url },
         this.communityId,
       );
       runInAction(() => {
@@ -123,12 +132,16 @@ class PostStore {
     if (post) {
       try {
         this.isLoading = true;
-        await this.transportLayer.updatePost({ title: this.title, body: this.body }, postId);
+        await this.transportLayer.updatePost(
+          { title: this.title, body: this.body, url: this.url },
+          postId,
+        );
         runInAction(() => {
           post = {
             ...post,
             title: this.title,
             body: this.body,
+            url: this.url,
           };
           this.currentPost = post;
           this.isLoading = false;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Message } from 'semantic-ui-react';
+import { Form, Message, Image } from 'semantic-ui-react';
 import { observer, inject } from 'mobx-react';
 import isEmpty from 'lodash/isEmpty';
 import values from 'lodash/values';
@@ -26,6 +26,10 @@ export default class PostEditor extends Component {
     this.props.postStore.setTitle(e.target.value);
   };
 
+  handleImageChange = (e) => {
+    this.props.postStore.setUrl(e.target.value);
+  };
+
   handleBodyChange = (e) => {
     this.props.postStore.setBody(e.target.value);
   };
@@ -41,7 +45,7 @@ export default class PostEditor extends Component {
   };
   render() {
     const {
-      title, body, errors, isLoading,
+      title, body, url, errors, isLoading,
     } = this.props.postStore;
     const errorList = isEmpty(errors) ? [] : values(errors);
     const isNewPost = !this.props.match.params.postId;
@@ -63,6 +67,16 @@ export default class PostEditor extends Component {
           error={errors && !!errors.title}
           onChange={this.handleTitleChange}
         />
+        <Form.Input
+          fluid
+          name="url"
+          label="Image"
+          placeholder="Image URL"
+          value={url}
+          autoComplete="off"
+          onChange={this.handleImageChange}
+        />
+        {url && <Image src={url} centered size="medium" />}
         <Form.TextArea
           autoHeight
           name="body"

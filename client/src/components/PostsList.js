@@ -1,27 +1,37 @@
 import React, { Fragment } from 'react';
-import { Item, Icon, Header, ItemGroup } from 'semantic-ui-react';
+import { Icon, Header, Image, Card } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 export default function PostList(props) {
   const posts = props.posts.length ? (
-    <ItemGroup divided>
+    <Card.Group>
       {props.posts.map(post => (
-        <Item key={post.id}>
-          <Item.Content>
-            <Item.Header
+        <Card fluid key={`post-${post.id}`}>
+          <Card.Content>
+            <Card.Header
               as={Link}
               to={`/community/${post.communityId}/${post.id}`}
               content={post.title}
             />
-            <Item.Meta content={`${post.poster} ${new Date(post.createdAt).toDateString()}`} />
-            <Item.Description content={post.body} />
-            <Item.Extra as={Link} to={`/community/${post.communityId}/${post.id}`}>
-              <Icon color="blue" name="comments" /> 121 Comments
-            </Item.Extra>
-          </Item.Content>
-        </Item>
+            <Card.Meta content={`${post.poster} ${new Date(post.createdAt).toDateString()}`} />
+            <Card.Description content={post.body} />
+            {post.url && (
+              <div style={{ padding: 10 }}>
+                <Image src={post.url} size="medium" centered />
+              </div>
+            )}
+          </Card.Content>
+          <Card.Content
+            textAlign="right"
+            extra
+            as={Link}
+            to={`/community/${post.communityId}/${post.id}`}
+          >
+            <Icon color="blue" name="comments" /> 121 Comments
+          </Card.Content>
+        </Card>
       ))}
-    </ItemGroup>
+    </Card.Group>
   ) : (
     <p>No posts yet...</p>
   );
