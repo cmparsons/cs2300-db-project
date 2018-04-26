@@ -128,7 +128,7 @@ class PostStore {
 
   @action
   async updatePost(postId) {
-    let post = this.getPost(postId);
+    const post = this.getPost(postId);
     if (post) {
       try {
         this.isLoading = true;
@@ -137,13 +137,13 @@ class PostStore {
           postId,
         );
         runInAction(() => {
-          post = {
+          const postIdx = this.posts.findIndex(p => p.id === postId);
+          this.posts[postIdx] = {
             ...post,
             title: this.title,
             body: this.body,
             url: this.url,
           };
-          this.currentPost = post;
           this.isLoading = false;
           uiStore.addAlertMessage('Successfully updated post!', 'Hot Dog!', 'success');
         });
