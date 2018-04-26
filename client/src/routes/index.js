@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 
+import PrivateRoute from '../components/PrivateRoute';
 import NavBar from '../components/NavBar';
 import AlertMessageList from '../components/AlertMessages/AlertMessageList';
 import Register from './Register';
@@ -26,9 +27,9 @@ const Routes = () => (
           <Route exact path="/register" component={Register} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/communities" component={Communities} />
-          <Route exact path="/create-community" component={CreateCommunity} />
-          <Route exact path="/post-editor/:communityId/:postId?" component={PostEditor} />
-          <Route exact path="/inbox" component={Inbox} />
+          <PrivateRoute exact path="/create-community" component={CreateCommunity} />
+          <PrivateRoute exact path="/post-editor/:communityId/:postId?" component={PostEditor} />
+          <PrivateRoute exact path="/inbox" component={Inbox} />
           <Redirect to="/" />
         </Switch>
       </Container>
