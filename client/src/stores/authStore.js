@@ -1,4 +1,4 @@
-import { action, reaction, observable, computed } from 'mobx';
+import { action, reaction, observable, computed, runInAction } from 'mobx';
 import RequestLayer from '../middlewares/requestLayer';
 import TransportLayer from '../middlewares/transportLayer';
 import userStore from './userStore';
@@ -28,12 +28,17 @@ class AuthStore {
     this.isLoading = true;
     try {
       const token = await this.transportLayer.login(identifier, password);
-      this.setToken(token);
-      await userStore.getCurrentUser();
+      runInAction(async () => {
+        this.setToken(token);
+        await userStore.getCurrentUser();
+        this.isLoading = false;
+      });
     } catch (err) {
-      this.errors = err.response.data;
+      runInAction(() => {
+        this.errors = err && err.response && err.response.data;
+        this.isLoading = false;
+      });
     }
-    this.isLoading = false;
   }
 
   @action
@@ -41,12 +46,17 @@ class AuthStore {
     this.isLoading = true;
     try {
       const token = await this.transportLayer.register(username, email, password);
-      this.setToken(token);
-      await userStore.getCurrentUser();
+      runInAction(async () => {
+        this.setToken(token);
+        await userStore.getCurrentUser();
+        this.isLoading = false;
+      });
     } catch (err) {
-      this.errors = err.response.data;
+      runInAction(() => {
+        this.errors = err && err.response && err.response.data;
+        this.isLoading = false;
+      });
     }
-    this.isLoading = false;
   }
 
   @action
