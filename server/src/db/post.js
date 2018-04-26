@@ -16,9 +16,11 @@ export async function getPostById(postId) {
         'body',
         'username as poster',
         'post.created_at as createdAt',
+        'url',
       )
       .where('post.id', postId)
-      .innerJoin('user', 'poster_id', 'user.id');
+      .innerJoin('user', 'poster_id', 'user.id')
+      .leftJoin('image_post', 'post.id', '=', 'image_post.post_id');
   } catch (err) {
     console.log(err);
   }

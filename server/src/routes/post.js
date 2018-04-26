@@ -27,8 +27,10 @@ router.get('/', async (req, res) => {
         'body',
         'username as poster',
         'post.created_at as createdAt',
+        'url',
       )
       .innerJoin('user', 'poster_id', '=', 'user.id')
+      .leftJoin('image_post', 'post.id', '=', 'image_post.post_id')
       .orderBy('post.created_at', 'desc');
 
     return res.json({ posts });
@@ -54,14 +56,17 @@ router.get('/:postId', async (req, res) => {
 });
 
 /**
+ * Request params:
+ *    communityId: id of community the post will belong to
+ *
  * Request body:
- *    name: Name of the community
+ *    title: title of post
+ *    body: body of post
+ *    url?: image url
+ *    type: type of image
  *
  * Response body
- *    postId?: id of the post
- *    title?: Error message for the title field
- *    body?: Error message for the body field
- *    communityId?: Error message for the communityId field
+ *    post: post just created
  */
 router.post('/:communityId', async (req, res) => {
   // Client sent a bad request
@@ -99,6 +104,15 @@ router.post('/:communityId', async (req, res) => {
       title: req.body.title,
       body: req.body.body,
     });
+
+    // If an image url exists in the request, insert post into image_post table
+    if (req.body.url) {
+      await knex('image_post').insert({
+        post_id: postId,
+        url: req.body.url,
+        type: 'image',
+      });
+    }
 
     return res.status(200).json({ post: await getPostById(postId) });
   } catch (err) {
@@ -157,6 +171,14 @@ router.put('/:postId', async (req, res) => {
         title: req.body.title,
         body: req.body.body,
       });
+
+    if (post.url !== req.body.url) {
+      await knex('image_post')
+        .where('post_id', '=', req.params.postId)
+        .update({
+          url: req.body.url,
+        });
+    }
 
     return res.sendStatus(200);
   } catch (err) {
