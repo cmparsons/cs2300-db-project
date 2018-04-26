@@ -40,7 +40,7 @@ export function createToken(userId) {
     },
     process.env.APP_SECRET,
     {
-      expiresIn: '1d',
+      expiresIn: '1y',
     },
   );
 

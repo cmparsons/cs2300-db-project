@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
     return res.json({ posts });
   } catch (err) {
     console.log(err);
-    return res.status(500);
+    return res.sendStatus(500);
   }
 });
 
@@ -49,7 +49,7 @@ router.get('/:postId', async (req, res) => {
     return res.json({ post });
   } catch (err) {
     console.log(err);
-    return res.status(500);
+    return res.sendStatus(500);
   }
 });
 
@@ -66,7 +66,7 @@ router.get('/:postId', async (req, res) => {
 router.post('/:communityId', async (req, res) => {
   // Client sent a bad request
   if (!req.body) {
-    return res.status(400);
+    return res.sendStatus(400);
   }
 
   // Check to make sure the communityId is not null. Send error message if null
@@ -104,7 +104,7 @@ router.post('/:communityId', async (req, res) => {
   } catch (err) {
     // Some system error occurred
     console.log(err);
-    return res.status(500);
+    return res.sendStatus(500);
   }
 });
 
@@ -124,7 +124,7 @@ router.post('/:communityId', async (req, res) => {
 router.put('/:postId', async (req, res) => {
   // Client sent a bad request
   if (!req.body) {
-    return res.status(400).end();
+    return res.sendStatus(400);
   }
 
   // Check to make sure the postId is not null. Send error message if null
@@ -158,11 +158,11 @@ router.put('/:postId', async (req, res) => {
         body: req.body.body,
       });
 
-    return res.status(200).end();
+    return res.sendStatus(200);
   } catch (err) {
     // Some system error occurred
     console.log(err);
-    return res.status(500).end();
+    return res.sendStatus(500);
   }
 });
 /**
@@ -178,11 +178,11 @@ router.delete('/:postId', async (req, res) => {
   } catch (err) {
     // Some system error occured
     console.log(err);
-    return res.status(500);
+    return res.sendStatus(500);
   }
 
   // Delete was successful
-  return res.status(200).end();
+  return res.sendStatus(200);
 });
 
 export default router;

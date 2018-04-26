@@ -60,7 +60,7 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ email: 'Email not unique', username: 'Username not unique' });
   } catch (err) {
     console.log(err);
-    return res.status(500);
+    return res.sendStatus(500);
   }
 });
 
@@ -99,12 +99,12 @@ router.get('/me', async (req, res) => {
       .where('user.id', req.payload.userId);
 
     if (!user) {
-      return res.status(404);
+      return res.sendStatus(404);
     }
     return res.json({ user });
   } catch (err) {
     console.error(err);
-    return res.status(500);
+    return res.sendStatus(500);
   }
 });
 
