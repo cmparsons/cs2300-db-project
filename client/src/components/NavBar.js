@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router';
-import { Input, Menu } from 'semantic-ui-react';
+import { Input, Menu, Icon } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
 import { NavLink } from 'react-router-dom';
 
@@ -73,6 +73,15 @@ export default class NavBar extends React.Component {
           </Menu.Item>
           {this.props.authStore.isAuthenticated ? (
             <React.Fragment>
+              <Menu.Item
+                name="inbox"
+                as={NavLink}
+                to="/inbox"
+                active={activeItem === 'inbox'}
+                style={menuItemStyle}
+              >
+                <Icon name="inbox" />
+              </Menu.Item>
               <Menu.Item
                 content={`Hi, ${
                   this.props.userStore.user ? this.props.userStore.user.username : ''

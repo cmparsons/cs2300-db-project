@@ -11,6 +11,7 @@ import Communities from './Communities';
 import CreateCommunity from './CreateCommunity';
 import PostEditor from './PostEditor';
 import Post from './Post';
+import Inbox from './Inbox';
 
 const Routes = () => (
   <BrowserRouter>
@@ -27,7 +28,8 @@ const Routes = () => (
           <Route exact path="/communities" component={Communities} />
           <Route exact path="/create-community" component={CreateCommunity} />
           <Route exact path="/post-editor/:communityId/:postId?" component={PostEditor} />
-          {/* <Redirect to="/" /> */}
+          <Route exact path="/inbox" component={Inbox} />
+          <Redirect to="/" />
         </Switch>
       </Container>
     </React.Fragment>
