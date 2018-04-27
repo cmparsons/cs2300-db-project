@@ -72,7 +72,7 @@ export default class PostEditor extends Component {
           name="url"
           label="Image"
           placeholder="Image URL"
-          value={url}
+          value={url || ''}
           autoComplete="off"
           onChange={this.handleImageChange}
         />

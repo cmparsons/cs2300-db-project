@@ -3,18 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "axios": "^0.17.1",
-    "lodash": "^4.17.4",
-    "mobx": "^3.5.1",
-    "mobx-react": "^4.4.1",
+    "axios": "^0.18.0",
+    "lodash": "^4.17.10",
+    "mobx": "^4.2.0",
+    "mobx-react": "^5.0.0",
     "react": "^16.2.0",
     "react-app-rewire-mobx": "^1.0.8",
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.0",
+    "react-scripts": "1.1.4",
     "semantic-ui-css": "^2.2.14",
-    "semantic-ui-react": "^0.77.2"
+    "semantic-ui-react": "^0.79.1"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -24,6 +24,6 @@
   },
   "proxy": "http://localhost:3001",
   "devDependencies": {
-    "react-app-rewired": "^1.5.0"
+    "react-app-rewired": "^1.5.2"
   }
 }
