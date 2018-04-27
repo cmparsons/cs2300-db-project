@@ -13,13 +13,18 @@ const router = Router();
  */
 
 /**
+ * Request query:
+ *    filter?: string pattern match filter on post body or title
+ *
  * Response body:
  *    posts?: Array of posts of id, poster's username, poster's id, title, and body
  */
 router.get('/', async (req, res) => {
   try {
     // Get all posts and join with user table to get poster's username
-    const posts = await knex('post')
+    // Left join with image_post table to find any posts with images
+    // (and keep posts that don't have records in image_post)
+    const postsQuery = knex('post')
       .select(
         'post.id',
         'community_id as communityId',
@@ -33,7 +38,14 @@ router.get('/', async (req, res) => {
       .leftJoin('image_post', 'post.id', '=', 'image_post.post_id')
       .orderBy('post.created_at', 'desc');
 
-    return res.json({ posts });
+    // If there was a filter passed, do a string pattern match query on title and body
+    if (req.query.filter) {
+      postsQuery
+        .where('title', 'like', `%${req.query.filter}%`)
+        .orWhere('body', 'like', `%${req.query.filter}%`);
+    }
+
+    return res.json({ posts: await postsQuery });
   } catch (err) {
     console.log(err);
     return res.sendStatus(500);

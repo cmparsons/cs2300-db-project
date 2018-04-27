@@ -44,9 +44,13 @@ export default class RequestLayer {
     }
   };
 
-  fetchAllPosts = async () => {
+  fetchAllPosts = async (filter) => {
     try {
-      const response = await axios.get('/api/post');
+      const response = await axios.get('/api/post', {
+        params: {
+          filter,
+        },
+      });
       return response.data.posts;
     } catch (err) {
       throw err;

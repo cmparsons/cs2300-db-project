@@ -12,8 +12,10 @@ const menuStyle = {
   background: '#4267b2',
 };
 
+const ENTER_KEY = 13;
+
 @withRouter
-@inject('authStore', 'userStore')
+@inject('authStore', 'userStore', 'postStore')
 @observer
 export default class NavBar extends React.Component {
   state = {
@@ -23,6 +25,12 @@ export default class NavBar extends React.Component {
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name });
+  };
+
+  handleKeyDown = ({ keyCode }) => {
+    if (keyCode === ENTER_KEY) {
+      this.props.postStore.fetchAllPosts(this.state.searchInput);
+    }
   };
 
   handleLogoutClick = () => {
@@ -64,11 +72,11 @@ export default class NavBar extends React.Component {
         <Menu.Menu position="right">
           <Menu.Item>
             <Input
-              onKeyDown={this.handleKeyDown}
               icon="search"
               placeholder="Search..."
               value={searchInput}
               onChange={this.handleSearchChange}
+              onKeyDown={this.handleKeyDown}
             />
           </Menu.Item>
           {this.props.authStore.isAuthenticated ? (

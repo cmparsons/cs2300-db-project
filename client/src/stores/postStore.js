@@ -196,10 +196,10 @@ class PostStore {
   }
 
   @action
-  async fetchAllPosts() {
+  async fetchAllPosts(filter) {
     try {
       this.isLoading = true;
-      const posts = await this.requestLayer.fetchAllPosts();
+      const posts = await this.requestLayer.fetchAllPosts(filter);
       runInAction(() => {
         this.posts = posts;
         this.isLoading = false;
