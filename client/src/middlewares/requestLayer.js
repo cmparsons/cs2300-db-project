@@ -74,4 +74,22 @@ export default class RequestLayer {
       throw err;
     }
   };
+
+  fetchInboxMessages = async () => {
+    try {
+      const response = await axios.get('/api/messages/inbox');
+      return response.data.messages;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  fetchSentMessages = async () => {
+    try {
+      const response = await axios.get('/api/messages/sent');
+      return response.data.messages;
+    } catch (err) {
+      throw err;
+    }
+  };
 }
