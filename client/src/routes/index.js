@@ -13,6 +13,7 @@ import CreateCommunity from './CreateCommunity';
 import PostEditor from './PostEditor';
 import Post from './Post';
 import Inbox from './Inbox';
+import CreateMessage from './CreateMessage';
 
 const Routes = () => (
   <BrowserRouter>
@@ -30,6 +31,7 @@ const Routes = () => (
           <PrivateRoute exact path="/create-community" component={CreateCommunity} />
           <PrivateRoute exact path="/post-editor/:communityId/:postId?" component={PostEditor} />
           <PrivateRoute exact path="/inbox" component={Inbox} />
+          <PrivateRoute exact path="/create-message" component={CreateMessage} />
           <Redirect to="/" />
         </Switch>
       </Container>

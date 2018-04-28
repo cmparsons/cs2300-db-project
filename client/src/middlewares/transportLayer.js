@@ -77,4 +77,14 @@ export default class TransportLayer {
       throw err;
     }
   };
+
+  createMessage = async (message) => {
+    try {
+      await axios.post('/api/messages', {
+        ...message,
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
 }

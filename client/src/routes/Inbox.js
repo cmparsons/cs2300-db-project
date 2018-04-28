@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Grid, GridColumn, Menu, Input, Loader } from 'semantic-ui-react';
+import { Grid, GridColumn, Menu, Input, Loader, Button } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
+import { Link } from 'react-router-dom';
 
 import MessageList from '../components/MessageList';
 
@@ -34,6 +35,10 @@ export default class Inbox extends Component {
     this.props.messageStore.setMailFilter(e.target.value);
   };
 
+  handleCheckboxChange = (e, { id, checked }) => {
+    this.props.messageStore.toggleSelected(id, checked);
+  };
+
   render() {
     const { activeItem } = this.state;
     const { messageList, isLoading, searchFilter } = this.props.messageStore;
@@ -61,9 +66,21 @@ export default class Inbox extends Component {
               />
             </Menu.Item>
           </Menu>
+          <Button
+            content="New Message"
+            labelPosition="left"
+            icon="edit"
+            primary
+            as={Link}
+            to="/create-message"
+          />
         </GridColumn>
         <GridColumn width={12}>
-          <MessageList messages={messageList} />
+          <MessageList
+            messages={messageList}
+            context={this.state.activeItem}
+            onChange={this.handleCheckboxChange}
+          />
         </GridColumn>
       </Grid>
     );

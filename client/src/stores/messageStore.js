@@ -1,4 +1,5 @@
 import { observable, action, runInAction, computed } from 'mobx';
+import values from 'lodash/values';
 
 import RequestLayer from '../middlewares/requestLayer';
 import TransportLayer from '../middlewares/transportLayer';
@@ -6,6 +7,7 @@ import uiStore from './uiStore';
 
 class MessageStore {
   @observable messages = [];
+  @observable selectedMessages = [];
   @observable isLoading = false;
   @observable errors;
 
@@ -16,6 +18,34 @@ class MessageStore {
   constructor() {
     this.requestLayer = new RequestLayer();
     this.transportLayer = new TransportLayer();
+  }
+
+  @computed
+  get errorList() {
+    if (this.errors !== undefined) {
+      return values(this.errors);
+    }
+    return [];
+  }
+
+  @computed
+  get hasError() {
+    return this.errorList.length > 0;
+  }
+
+  @action
+  toggleSelected(id, checked) {
+    if (checked) {
+      this.selectedMessages.push(id);
+    } else {
+      const messageIdx = this.selectedMessages.findIndex(msgId => msgId === id);
+      this.selectedMessages.splice(messageIdx, 1);
+    }
+  }
+
+  @action
+  setReceiver(receiver) {
+    this.receiver = receiver;
   }
 
   @action
@@ -43,44 +73,36 @@ class MessageStore {
   @computed
   get messageList() {
     // Filters messages that don't contain the filter in the message body nor sender username
-    const filteredMessages = this.messages.filter(message =>
+    return this.messages.filter(message =>
       message.body.toLowerCase().indexOf(this.searchFilter.toLowerCase()) !== -1 &&
         message.sender.toLowerCase().indexOf(this.searchFilter.toLowerCase() !== -1));
-
-    return filteredMessages.map(message => ({
-      id: message.id,
-      body: message.body,
-      sender: message.sender,
-      createdAt: message.createdAt,
-    }));
   }
 
-  // @action
-  // async createMessage() {
-  //   try {
-  //     this.isLoading = true;
-  //     const message = await this.transportLayer.createMessage({
-  //       body: this.body,
-  //       recevier: this.receiver,
-  //     });
-  //     runInAction(() => {
-  //       // this.posts.push(post);
-  //       this.isLoading = false;
-  //       uiStore.addAlertMessage('Success', 'Successfully sent message!', 'success');
-  //     });
-  //   } catch (err) {
-  //     runInAction(() => {
-  //       console.log(err);
-  //       this.isLoading = false;
-  //       this.errors = err && err.response && err.response.data;
-  //       uiStore.addAlertMessage(
-  //         'Uh-oh!',
-  //         'Something happened and your message could not be sent!',
-  //         'negative',
-  //       );
-  //     });
-  //   }
-  // }
+  @action.bound
+  async createMessage() {
+    try {
+      this.isLoading = true;
+      await this.transportLayer.createMessage({
+        body: this.body,
+        receiver: this.receiver,
+      });
+      runInAction(() => {
+        this.isLoading = false;
+        uiStore.addAlertMessage('Success', 'Successfully sent message!', 'success');
+      });
+    } catch (err) {
+      runInAction(() => {
+        console.log(err);
+        this.isLoading = false;
+        this.errors = err && err.response && err.response.data;
+        uiStore.addAlertMessage(
+          'Uh-oh!',
+          'Something happened and your message could not be sent!',
+          'negative',
+        );
+      });
+    }
+  }
 
   // @action.bound
   // async deletePost(postId) {

@@ -79,14 +79,14 @@ router.get('/sent', async (req, res) => {
  *    body: error message for body
  *    message: newly created message
  */
-router.post('/:username', async (req, res) => {
+router.post('/', async (req, res) => {
   // Client sent a bad request
   if (!req.body) {
     return res.sendStatus(400);
   }
 
   // Check to make sure the receiver exists
-  const receiver = await getUserByUsername(req.params.username);
+  const receiver = await getUserByUsername(req.body.receiver);
 
   if (!receiver) {
     return res.status(404).json({ user: 'No user found' });
