@@ -3,6 +3,7 @@ import authStore from './authStore';
 import communityStore from './communityStore';
 import postStore from './postStore';
 import uiStore from './uiStore';
+import commentsStore from './commentsStore';
 
 export default {
   userStore,
@@ -10,4 +11,5 @@ export default {
   communityStore,
   postStore,
   uiStore,
+  commentsStore,
 };

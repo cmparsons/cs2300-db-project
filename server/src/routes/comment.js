@@ -99,7 +99,7 @@ router.post('/:postId', async (req, res) => {
       body: req.body.body,
     });
 
-    return res.status(200).json({ post: await getCommentById(commentId) });
+    return res.status(200).json({ comment: await getCommentById(commentId) });
   } catch (err) {
     // Some system error occurred
     console.log(err);

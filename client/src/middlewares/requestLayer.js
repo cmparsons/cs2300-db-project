@@ -74,4 +74,13 @@ export default class RequestLayer {
       throw err;
     }
   };
+
+  fetchComments = async (postId) => {
+    try {
+      const response = await axios.get(`/api/post/${postId}/comments`);
+      return response.data.comments;
+    } catch (err) {
+      throw err;
+    }
+  };
 }
