@@ -75,10 +75,6 @@ class AuthStore {
     this.requestLayer = new RequestLayer();
     this.transportLayer = new TransportLayer();
 
-    if (this.token) {
-      userStore.getCurrentUser();
-    }
-
     reaction(
       () => this.token,
       (token) => {

@@ -27,9 +27,9 @@ export default class NavBar extends React.Component {
     this.setState({ activeItem: name });
   };
 
-  handleKeyDown = ({ keyCode }) => {
+  handleKeyDown = async ({ keyCode }) => {
     if (keyCode === ENTER_KEY) {
-      this.props.postStore.fetchAllPosts(this.state.searchInput);
+      await this.props.postStore.fetchAllPosts(this.state.searchInput);
     }
   };
 

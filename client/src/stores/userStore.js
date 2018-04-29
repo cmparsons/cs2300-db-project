@@ -10,7 +10,7 @@ class UserStore {
     try {
       this.user = await this.requestLayer.getCurrentUser();
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   }
 
