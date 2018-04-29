@@ -42,6 +42,12 @@ class CommunityStore {
     this.errors = undefined;
   }
 
+  @action
+  reset() {
+    this.clearErrors();
+    this.name = '';
+  }
+
   /**
    * Get all communities created by the current logged in user
    */
@@ -88,6 +94,7 @@ class CommunityStore {
   @action
   async createCommunity() {
     this.isLoading = true;
+    this.clearErrors();
     try {
       const community = await this.transportLayer.createCommunity(this.name);
       runInAction(() => {

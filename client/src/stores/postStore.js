@@ -102,6 +102,7 @@ class PostStore {
   async createPost() {
     try {
       this.isLoading = true;
+      this.clearErrors();
       const post = await this.transportLayer.createPost(
         { title: this.title, body: this.body, url: this.url },
         this.communityId,
@@ -132,6 +133,7 @@ class PostStore {
     if (post) {
       try {
         this.isLoading = true;
+        this.clearErrors();
         await this.transportLayer.updatePost(
           { title: this.title, body: this.body, url: this.url },
           postId,

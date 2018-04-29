@@ -8,8 +8,7 @@ import values from 'lodash/values';
 @observer
 export default class CreateCommunity extends Component {
   componentWillUnmount() {
-    this.props.communityStore.clearErrors();
-    this.props.communityStore.setName('');
+    this.props.communityStore.reset();
   }
 
   handleChange = (e) => {
@@ -19,7 +18,9 @@ export default class CreateCommunity extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     await this.props.communityStore.createCommunity();
-    this.props.history.push('/communities');
+    if (this.props.communityStore.errors === undefined) {
+      this.props.history.push('/communities');
+    }
   };
   render() {
     const { name, errors, isLoading } = this.props.communityStore;
