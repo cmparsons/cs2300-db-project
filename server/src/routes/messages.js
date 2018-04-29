@@ -118,11 +118,15 @@ router.post('/', async (req, res) => {
  *      messageId - id of message to delete
  *
  */
-router.delete('/:messageId', async (req, res) => {
+router.delete('/', async (req, res) => {
   try {
-    await knex('message')
-      .where('id', req.params.messageId)
-      .del();
+    // Delete messages if passed in array length is greater than 0
+    const messageIds = JSON.parse(req.query.messageIds);
+    if (req.query.messageIds) {
+      await knex('message')
+        .whereIn('id', messageIds)
+        .del();
+    }
   } catch (err) {
     // Some system error occured
     console.log(err);

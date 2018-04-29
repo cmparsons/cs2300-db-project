@@ -68,6 +68,7 @@ class MessageStore {
     this.body = '';
     this.receiver = '';
     this.clearErrors();
+    this.selectedMessages = [];
   }
 
   @computed
@@ -82,6 +83,7 @@ class MessageStore {
   async createMessage() {
     try {
       this.isLoading = true;
+      this.clearErrors();
       await this.transportLayer.createMessage({
         body: this.body,
         receiver: this.receiver,
@@ -104,29 +106,31 @@ class MessageStore {
     }
   }
 
-  // @action.bound
-  // async deletePost(postId) {
-  //   const postIdx = this.posts.findIndex(p => p.id === postId);
-  //   if (postIdx !== -1) {
-  //     this.posts.splice(postIdx, 1);
-  //     try {
-  //       await this.transportLayer.deletePost(postId);
-  //       uiStore.addAlertMessage('Success!', 'Successfully deleted post!', 'success');
-  //     } catch (err) {
-  //       runInAction(async () => {
-  //         console.log(err);
-  //         this.isLoading = true;
-  //         await this.fetchAllPosts();
-  //         uiStore.addAlertMessage(
-  //           'Uh-oh!',
-  //           'Something happened and your post could not be deleted!',
-  //           'negative',
-  //         );
-  //         this.isLoading = false;
-  //       });
-  //     }
-  //   }
-  // }
+  @action.bound
+  async deleteMessages() {
+    if (this.selectedMessages.length > 0) {
+      try {
+        this.isLoading = true;
+        await this.transportLayer.deleteMessages(this.selectedMessages);
+        runInAction(() => {
+          this.messages = this.messages.filter(message => this.selectedMessages.indexOf(message.id) === -1);
+          this.selectedMessages = [];
+          uiStore.addAlertMessage('Success!', 'Successfully deleted post!', 'success');
+          this.isLoading = false;
+        });
+      } catch (err) {
+        runInAction(async () => {
+          console.log(err);
+          uiStore.addAlertMessage(
+            'Uh-oh!',
+            'Something happened and your post could not be deleted!',
+            'negative',
+          );
+          this.isLoading = false;
+        });
+      }
+    }
+  }
 
   @action
   async fetchInboxMessages() {

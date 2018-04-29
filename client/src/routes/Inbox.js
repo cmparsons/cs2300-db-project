@@ -11,7 +11,6 @@ export default class Inbox extends Component {
   state = {
     activeItem: 'inbox',
   };
-
   async componentDidMount() {
     await this.props.messageStore.fetchInboxMessages();
   }
@@ -19,6 +18,7 @@ export default class Inbox extends Component {
   async componentDidUpdate(prevProps, prevState) {
     // If the activeItem changed, load the appropriate messages
     if (this.state.activeItem !== prevState.activeItem) {
+      this.props.messageStore.reset();
       if (this.state.activeItem === 'sent') {
         await this.props.messageStore.fetchSentMessages();
       } else {
@@ -39,6 +39,10 @@ export default class Inbox extends Component {
     this.props.messageStore.toggleSelected(id, checked);
   };
 
+  handleDeleteClick = async () => {
+    await this.props.messageStore.deleteMessages();
+  };
+
   render() {
     const { activeItem } = this.state;
     const { messageList, isLoading, searchFilter } = this.props.messageStore;
@@ -50,6 +54,14 @@ export default class Inbox extends Component {
     return (
       <Grid container>
         <GridColumn width={4}>
+          <Button
+            content="New Message"
+            labelPosition="left"
+            icon="edit"
+            primary
+            as={Link}
+            to="/create-message"
+          />
           <Menu vertical>
             <Menu.Item name="inbox" active={activeItem === 'inbox'} onClick={this.handleItemClick}>
               Inbox
@@ -67,12 +79,11 @@ export default class Inbox extends Component {
             </Menu.Item>
           </Menu>
           <Button
-            content="New Message"
+            content="Delete Messages"
+            color="red"
             labelPosition="left"
-            icon="edit"
-            primary
-            as={Link}
-            to="/create-message"
+            icon="trash"
+            onClick={this.handleDeleteClick}
           />
         </GridColumn>
         <GridColumn width={12}>
