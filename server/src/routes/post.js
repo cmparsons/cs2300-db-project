@@ -52,6 +52,46 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * Request params:
+ *    postId: id of post the comments belong to
+ *
+ * Response body:
+ *    post?: Either no postId was specified or no post with postId was found
+ */
+router.get('/:postId/comments', async (req, res) => {
+  if (!req.params.postId) {
+    return res.status(400).json({ post: 'No post specified' });
+  }
+
+  // Make sure the post exists
+  const post = await getPostById(req.params.postId);
+
+  if (!post) {
+    return res.status(404).json({ post: 'No post found' });
+  }
+
+  // Query from comment table where post_id is passed postId
+  try {
+    const comments = await knex('comment')
+      .select(
+        'comment_id as commentId',
+        'post_id as postId',
+        'user.username',
+        'body',
+        'comment.created_at as createdAt',
+      )
+      .where('post_id', '=', req.params.postId)
+      .innerJoin('user', 'user.id', '=', 'user_id');
+
+    return res.status(200).json({ comments });
+  } catch (err) {
+    // Some system error occured
+    console.log(err);
+    return res.sendStatus(500);
+  }
+});
+
 router.get('/:postId', async (req, res) => {
   if (!req.params.postId) {
     return res.status(400).json({ postId: 'No post specified' });

@@ -2,18 +2,18 @@ import knex from './';
 
 /**
  * Query for a comment by its id
- * @param {string | number} commentId id of post
- * @returns post if the post can be found. Otherwise, returns undefined
+ * @param {string | number} commentId id of comment
+ * @returns comment if the comment can be found. Otherwise, returns undefined
  */
 export async function getCommentById(commentId) {
   let comment;
   try {
     comment = await knex('comment')
       .first(
-        'comment_id',
-        'post_id',
+        'comment_id as commentId',
+        'post_id as postId',
         'body',
-        'username as poster',
+        'username',
         'comment.created_at as createdAt',
       )
       .where('comment.comment_id', commentId)

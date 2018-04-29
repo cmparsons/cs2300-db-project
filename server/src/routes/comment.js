@@ -22,10 +22,10 @@ router.get('/', async (req, res) => {
     // Get all comments and join with user table to get commenter's username
     const commentsQuery = knex('comment')
       .select(
-        'comment_id',
+        'comment_id as commentId',
         'post_id as postId',
         'body',
-        'username as poster',
+        'username',
         'comment.created_at as createdAt',
       )
       .innerJoin('user', 'user_id', '=', 'user.id')

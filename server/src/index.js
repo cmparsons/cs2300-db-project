@@ -25,7 +25,7 @@ app.use(auth.optional);
 app.use('/api/users/', users);
 app.use('/api/community/', community);
 app.use('/api/post/', post);
-app.use('/api/comment', comment);
+app.use('/api/comments/', comment);
 
 // Start server
 app.listen(PORT, () => {
