@@ -111,23 +111,25 @@ export default class Post extends Component {
             ) : (
               <p>No comments yet...</p>
             )}
-            <Form reply onSubmit={this.handleCommentSubmit}>
-              <Form.TextArea
-                error={hasError}
-                value={body}
-                rows={5}
-                autoHeight
-                onChange={this.handleCommentChange}
-              />
-              <Form.Button content="Add Comment" labelPosition="left" icon="edit" primary />
-              {hasError && (
-                <Message
-                  error
-                  header="There was some errors with your submission"
-                  list={errorList}
+            {user && (
+              <Form reply onSubmit={this.handleCommentSubmit}>
+                <Form.TextArea
+                  error={hasError}
+                  value={body}
+                  rows={5}
+                  autoHeight
+                  onChange={this.handleCommentChange}
                 />
-              )}
-            </Form>
+                <Form.Button content="Add Comment" labelPosition="left" icon="edit" primary />
+                {hasError && (
+                  <Message
+                    error
+                    header="There was some errors with your submission"
+                    list={errorList}
+                  />
+                )}
+              </Form>
+            )}
           </Comment.Group>
         )}
       </Fragment>
