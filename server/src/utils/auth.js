@@ -1,6 +1,9 @@
 import jsonwebtoken from 'jsonwebtoken';
 import jwt from 'express-jwt';
 
+const APP_SECRET =
+  process.env.APP_SECRET || 'la;sjdlaskdjfopiquwepqorela;sdfaldfz,.cmnvzc,xvnal;sdfowpqeuls;dkz,';
+
 /**
  * Get the token from the authorization header
  * @param {Request} req HTTP request objet
@@ -16,12 +19,12 @@ function getTokenFromHeader(req) {
 
 export const auth = {
   required: jwt({
-    secret: process.env.APP_SECRET,
+    secret: APP_SECRET,
     userProperty: 'payload',
     getToken: getTokenFromHeader,
   }),
   optional: jwt({
-    secret: process.env.APP_SECRET,
+    secret: APP_SECRET,
     userProperty: 'payload',
     credentialsRequired: false,
     getToken: getTokenFromHeader,
