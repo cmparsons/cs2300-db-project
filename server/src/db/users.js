@@ -35,7 +35,7 @@ export async function getUserByIdentifier(identifer) {
       .innerJoin('email', 'user.id', '=', 'email.user_id')
       .innerJoin('user_password', 'user.id', '=', 'user_password.user_id')
       .where('username', '=', identifer)
-      .where('email', '=', identifer);
+      .orWhere('email', '=', identifer);
   } catch (err) {
     console.log(err);
   }
