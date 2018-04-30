@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 
 import knex from '../db';
 import { createToken } from '../utils/auth';
-import { getUser } from '../db/users';
+import { getUser, getUserByIdentifier } from '../db/users';
 
 const router = Router();
 
@@ -22,10 +22,23 @@ router.post('/register', async (req, res) => {
   if (!req.body) {
     return res.sendStatus(400);
   }
-  const { username, email, password } = req.body;
+  const { username, emails, password } = req.body;
+
+  // Check and make sure all fields are not null. Send error message if null.
+  if (!username) {
+    return res.status(400).json({ username: 'Username is required' });
+  }
+
+  if (!emails || emails.length < 1 || (!emails[0] && !emails[1])) {
+    return res.status(400).json({ email: 'At least one email is required' });
+  }
+
+  if (!password) {
+    return res.status(400).json({ password: 'Password is required' });
+  }
 
   try {
-    const user = await getUser(email, username);
+    const user = await getUser(emails, username);
 
     if (!user) {
       const encrypted = await bcrypt.hash(password, 10);
@@ -33,9 +46,24 @@ router.post('/register', async (req, res) => {
       // Insert user into the user table
       const [userId] = await knex('user').insert({ username });
 
-      // Insert user's email and password in to the email and user_password tables
+      // Create array of records to insert
+      const emailRecords = [];
+      emails.forEach((email) => {
+        // Check and see if user used the same email twice. Only use one of them.
+        const emailIdx = emailRecords.findIndex(e => e.email === email);
+        if (emailIdx === -1) {
+          if (email) {
+            emailRecords.push({
+              user_id: userId,
+              email,
+            });
+          }
+        }
+      });
+
+      // Insert user's emails and password in to the email and user_password tables
       Promise.all([
-        knex('email').insert({ user_id: userId, email }),
+        knex('email').insert(emailRecords),
         knex('user_password').insert({ user_id: userId, encrypted }),
       ]);
 
@@ -61,7 +89,7 @@ router.post('/login', async (req, res) => {
   const { identifier, password } = req.body;
 
   // Find first user that matches the email or username
-  const user = await getUser(identifier);
+  const user = await getUserByIdentifier(identifier);
 
   if (!user) {
     return res.status(400).json({ identifier: 'Invalid username/email' });

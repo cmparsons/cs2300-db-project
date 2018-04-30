@@ -1,60 +1,57 @@
 import React from 'react';
 import { Form, Message, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import isEmpty from 'lodash/isEmpty';
-import values from 'lodash/values';
 import { inject, observer } from 'mobx-react';
-
-import { validateRegister } from '../utils/validation';
-
-const defaultState = {
-  username: '',
-  email: '',
-  password: '',
-};
 
 @inject('authStore')
 @observer
 export default class Register extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = defaultState;
-  }
-
   componentWillUnmount() {
-    this.props.authStore.clearErrors();
+    this.props.authStore.reset();
   }
 
   handleChange = (e) => {
     const { name, value } = e.target;
     this.props.authStore.clearErrors();
 
-    this.setState({ [name]: value });
+    switch (name) {
+      case 'username': {
+        this.props.authStore.setUsername(value);
+        break;
+      }
+      case 'email': {
+        this.props.authStore.setPrimaryEmail(value);
+        break;
+      }
+      case 'email2': {
+        this.props.authStore.setAdditionalEmail(value);
+        break;
+      }
+      case 'password': {
+        this.props.authStore.setPassword(value);
+        break;
+      }
+      default:
+    }
   };
 
   handleSubmit = async (e) => {
-    const { username, email, password } = this.state;
-    const { authStore } = this.props;
-
     e.preventDefault();
 
-    // Make sure all fields are filled in
-    const clientErrors = validateRegister(username, email, password);
-    if (!isEmpty(clientErrors)) {
-      authStore.setErrors(clientErrors);
-      return;
-    }
-
     // Make POST request to server to register user
-    await authStore.register(username, email, password);
+    await this.props.authStore.register();
   };
 
   render() {
-    const { username, email, password } = this.state;
-
-    const { errors, isLoading } = this.props.authStore;
-
-    const errorList = isEmpty(errors) ? [] : values(errors);
+    const {
+      errors,
+      isLoading,
+      username,
+      password,
+      emails,
+      errorList,
+      hasError,
+    } = this.props.authStore;
 
     return (
       <React.Fragment>
@@ -66,7 +63,7 @@ export default class Register extends React.Component {
         <Form
           className="attached fluid segment"
           onSubmit={this.handleSubmit}
-          error={errorList.length > 0}
+          error={hasError}
           loading={isLoading}
         >
           <Form.Input
@@ -76,7 +73,7 @@ export default class Register extends React.Component {
             placeholder="Username"
             value={username}
             autoComplete="off"
-            error={errors && !!errors.username}
+            error={hasError && !!errors.username}
             onChange={this.handleChange}
           />
           <Form.Input
@@ -85,9 +82,20 @@ export default class Register extends React.Component {
             name="email"
             label="Email"
             placeholder="Email"
-            value={email}
+            value={emails[0]}
             autoComplete="off"
-            error={errors && !!errors.email}
+            error={hasError && !!errors.email}
+            onChange={this.handleChange}
+          />
+          <Form.Input
+            fluid
+            type="email"
+            name="email2"
+            label="Additional Email"
+            placeholder="Email"
+            value={emails[1]}
+            autoComplete="off"
+            error={hasError && !!errors.email}
             onChange={this.handleChange}
           />
           <Form.Input
@@ -97,11 +105,11 @@ export default class Register extends React.Component {
             label="Password"
             placeholder="Password"
             value={password}
-            error={errors && !!errors.password}
+            error={hasError && !!errors.password}
             onChange={this.handleChange}
           />
           <Form.Button color="blue">Submit</Form.Button>
-          {errorList.length > 0 && (
+          {hasError && (
             <Message error header="There was some errors with your submission" list={errorList} />
           )}
         </Form>

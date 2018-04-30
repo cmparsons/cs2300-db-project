@@ -14,11 +14,11 @@ export default class TransportLayer {
     }
   };
 
-  register = async (username, email, password) => {
+  register = async (username, emails, password) => {
     try {
       const response = await axios.post('/api/users/register', {
         username,
-        email,
+        emails,
         password,
       });
 

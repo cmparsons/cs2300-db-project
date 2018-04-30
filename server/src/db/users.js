@@ -1,13 +1,12 @@
 import knex from './';
 
 /**
- * Query for user by identifer of email and/or username
- * @param {string} email
- * @param {string} username If one argument passed, then used as identifer for login.
- * Otherwise, used as seperate email and password
+ * Query for user by credentials (array of emails or username)
+ * @param {string[]} emails array of emails
+ * @param {string} username user's username
  * @returns user with encrypted password and id
  */
-export async function getUser(email, username = email) {
+export async function getUser(emails, username) {
   let user;
   try {
     user = await knex('user')
@@ -15,7 +14,28 @@ export async function getUser(email, username = email) {
       .innerJoin('email', 'user.id', '=', 'email.user_id')
       .innerJoin('user_password', 'user.id', '=', 'user_password.user_id')
       .where('username', '=', username)
-      .orWhere('email', '=', email);
+      .orWhereIn('email', emails);
+  } catch (err) {
+    console.log(err);
+  }
+
+  return user;
+}
+
+/**
+ * Query for user by identifer (username or email)
+ * @param {string} identifier Username or email of user
+ * @returns user with encrypted password and id
+ */
+export async function getUserByIdentifier(identifer) {
+  let user;
+  try {
+    user = await knex('user')
+      .first('encrypted', 'user.id')
+      .innerJoin('email', 'user.id', '=', 'email.user_id')
+      .innerJoin('user_password', 'user.id', '=', 'user_password.user_id')
+      .where('username', '=', identifer)
+      .where('email', '=', identifer);
   } catch (err) {
     console.log(err);
   }
