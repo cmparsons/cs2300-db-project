@@ -78,6 +78,28 @@ export default class TransportLayer {
     }
   };
 
+  createMessage = async (message) => {
+    try {
+      await axios.post('/api/messages', {
+        ...message,
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  deleteMessages = async (messageIds) => {
+    try {
+      await axios.delete('/api/messages', {
+        params: {
+          messageIds,
+        },
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
+
   createComment = async (body, postId) => {
     try {
       const response = await axios.post(`/api/comments/${postId}`, {

@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 
 import knex from '../db';
 import { createToken } from '../utils/auth';
+import { getUser } from '../db/users';
 
 const router = Router();
 
@@ -10,23 +11,6 @@ const router = Router();
  *  NOTE: We want to perform DB constraint checks before any actions
  *        because SQL driver doesn't send back error messages nicely
  */
-
-/**
- *
- * @param {string} email
- * @param {string} username If one argument passed, then used as identifer for login.
- * Otherwise, used as seperate email and password
- */
-async function getUser(email, username = email) {
-  const user = await knex('user')
-    .join('email', 'user.id', '=', 'email.user_id')
-    .join('user_password', 'user.id', '=', 'user_password.user_id')
-    .first('encrypted', 'user.id')
-    .where('username', username)
-    .orWhere('email', email);
-
-  return user;
-}
 
 /**
  * Create a new user by:

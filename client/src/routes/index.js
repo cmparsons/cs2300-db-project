@@ -14,6 +14,7 @@ import CreateCommunity from './CreateCommunity';
 import PostEditor from './PostEditor';
 import Post from './Post';
 import Inbox from './Inbox';
+import CreateMessage from './CreateMessage';
 
 @inject('authStore', 'userStore')
 @observer
@@ -45,6 +46,7 @@ export default class Routes extends Component {
                 component={PostEditor}
               />
               <PrivateRoute exact path="/inbox" component={Inbox} />
+              <PrivateRoute exact path="/create-message" component={CreateMessage} />
               <Redirect to="/" />
             </Switch>
           </Container>
