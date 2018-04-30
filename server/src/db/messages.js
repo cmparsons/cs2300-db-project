@@ -8,7 +8,7 @@ export async function getMessageById(messageId) {
   let message;
   try {
     message = await knex('message')
-      .select(
+      .first(
         'message.id',
         'user1.username as receiver',
         'user2.username as sender',

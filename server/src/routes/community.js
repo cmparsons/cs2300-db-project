@@ -22,6 +22,10 @@ const router = Router();
 //   }
 // });
 
+/**
+ * Response body:
+ *    communities?: Array of all communities
+ */
 router.get('/', async (req, res) => {
   try {
     // Get all communities and join with users to get the username of the creator

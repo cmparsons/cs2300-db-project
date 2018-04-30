@@ -61,14 +61,6 @@ export default class NavBar extends React.Component {
           onClick={this.handleItemClick}
           style={menuItemStyle}
         />
-        <Menu.Item
-          name="trending"
-          as={NavLink}
-          to="/trending"
-          active={activeItem === 'trending'}
-          onClick={this.handleItemClick}
-          style={menuItemStyle}
-        />
         <Menu.Menu position="right">
           <Menu.Item>
             <Input

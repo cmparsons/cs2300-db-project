@@ -29,7 +29,7 @@ class CommunityStore {
    */
   getCommunityName(id) {
     const community = this.communities.find(c => c.id === id);
-    return community ? community.name : 'General';
+    return community ? community.name : '';
   }
 
   @action
