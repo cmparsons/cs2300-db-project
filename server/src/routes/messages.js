@@ -121,10 +121,9 @@ router.post('/', async (req, res) => {
 router.delete('/', async (req, res) => {
   try {
     // Delete messages if passed in array length is greater than 0
-    const messageIds = JSON.parse(req.query.messageIds);
-    if (req.query.messageIds) {
+    if (req.body.messageIds) {
       await knex('message')
-        .whereIn('id', messageIds)
+        .whereIn('id', req.body.messageIds)
         .del();
     }
   } catch (err) {

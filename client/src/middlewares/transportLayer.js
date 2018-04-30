@@ -91,7 +91,7 @@ export default class TransportLayer {
   deleteMessages = async (messageIds) => {
     try {
       await axios.delete('/api/messages', {
-        params: {
+        data: {
           messageIds,
         },
       });
