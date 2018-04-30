@@ -8,6 +8,7 @@ import users from './routes/users';
 import community from './routes/community';
 import post from './routes/post';
 import messages from './routes/messages';
+import comment from './routes/comment';
 
 import { auth } from './utils/auth';
 
@@ -26,6 +27,7 @@ app.use('/api/users/', users);
 app.use('/api/community/', community);
 app.use('/api/post/', post);
 app.use('/api/messages/', messages);
+app.use('/api/comments/', comment);
 
 // Start server
 app.listen(PORT, () => {

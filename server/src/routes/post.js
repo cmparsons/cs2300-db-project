@@ -24,29 +24,73 @@ router.get('/', async (req, res) => {
     // Get all posts and join with user table to get poster's username
     // Left join with image_post table to find any posts with images
     // (and keep posts that don't have records in image_post)
+    // Left join to get all comments for posts and count number of comments
     const postsQuery = knex('post')
       .select(
         'post.id',
         'community_id as communityId',
-        'title',
-        'body',
+        'post.title',
+        'post.body',
         'username as poster',
         'post.created_at as createdAt',
         'url',
       )
       .innerJoin('user', 'poster_id', '=', 'user.id')
       .leftJoin('image_post', 'post.id', '=', 'image_post.post_id')
+      .leftJoin('comment', 'post.id', '=', 'comment.post_id')
+      .groupBy('post.id')
+      .count('comment.comment_id as commentsCount')
       .orderBy('post.created_at', 'desc');
 
     // If there was a filter passed, do a string pattern match query on title and body
     if (req.query.filter) {
       postsQuery
-        .where('title', 'like', `%${req.query.filter}%`)
-        .orWhere('body', 'like', `%${req.query.filter}%`);
+        .where('post.title', 'like', `%${req.query.filter}%`)
+        .orWhere('post.body', 'like', `%${req.query.filter}%`);
     }
 
     return res.json({ posts: await postsQuery });
   } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
+  }
+});
+
+/**
+ * Request params:
+ *    postId: id of post the comments belong to
+ *
+ * Response body:
+ *    post?: Either no postId was specified or no post with postId was found
+ */
+router.get('/:postId/comments', async (req, res) => {
+  if (!req.params.postId) {
+    return res.status(400).json({ post: 'No post specified' });
+  }
+
+  // Make sure the post exists
+  const post = await getPostById(req.params.postId);
+
+  if (!post) {
+    return res.status(404).json({ post: 'No post found' });
+  }
+
+  // Query from comment table where post_id is passed postId
+  try {
+    const comments = await knex('comment')
+      .select(
+        'comment_id as commentId',
+        'post_id as postId',
+        'user.username',
+        'body',
+        'comment.created_at as createdAt',
+      )
+      .where('post_id', '=', req.params.postId)
+      .innerJoin('user', 'user.id', '=', 'user_id');
+
+    return res.status(200).json({ comments });
+  } catch (err) {
+    // Some system error occured
     console.log(err);
     return res.sendStatus(500);
   }

@@ -111,7 +111,7 @@ export function up(knex, Promise) {
         table.timestamps(true, true);
       })
       .createTable('comment', (table) => {
-        table.integer('comment_id').notNullable();
+        table.increments('comment_id').primary();
         table
           .integer('post_id')
           .unsigned()
@@ -129,7 +129,7 @@ export function up(knex, Promise) {
           .inTable('user')
           .onDelete('CASCADE')
           .index();
-        table.primary(['post_id', 'comment_id']);
+        // table.primary(['post_id', 'comment_id']);
         table.timestamps(true, true);
       }),
   ]);

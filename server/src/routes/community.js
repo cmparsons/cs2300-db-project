@@ -112,13 +112,16 @@ router.get('/posts/:communityId', async (req, res) => {
   }
 
   try {
-    // Get all posts in the community and join with user table to get poster's username
+    // Get all posts and join with user table to get poster's username
+    // Left join with image_post table to find any posts with images
+    // (and keep posts that don't have records in image_post)
+    // Left join to get all comments for posts and count number of comments
     const posts = await knex('post')
       .select(
         'post.id',
         'community_id as communityId',
-        'title',
-        'body',
+        'post.title',
+        'post.body',
         'username as poster',
         'post.created_at as createdAt',
         'url',
@@ -126,6 +129,9 @@ router.get('/posts/:communityId', async (req, res) => {
       .where('community_id', req.params.communityId)
       .innerJoin('user', 'poster_id', '=', 'user.id')
       .leftJoin('image_post', 'post_id', '=', 'post.id')
+      .leftJoin('comment', 'post.id', '=', 'comment.post_id')
+      .groupBy('post.id')
+      .count('comment.comment_id as commentsCount')
       .orderBy('post.created_at', 'desc');
 
     return res.json({ posts });

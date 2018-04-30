@@ -4,6 +4,7 @@ import communityStore from './communityStore';
 import postStore from './postStore';
 import uiStore from './uiStore';
 import messageStore from './messageStore';
+import commentsStore from './commentsStore';
 
 export default {
   userStore,
@@ -12,4 +13,5 @@ export default {
   postStore,
   uiStore,
   messageStore,
+  commentsStore,
 };

@@ -26,6 +26,7 @@ class AuthStore {
   @action
   async login(identifier, password) {
     this.isLoading = true;
+    this.clearErrors();
     try {
       const token = await this.transportLayer.login(identifier, password);
       runInAction(async () => {
@@ -44,6 +45,7 @@ class AuthStore {
   @action
   async register(username, email, password) {
     this.isLoading = true;
+    this.clearErrors();
     try {
       const token = await this.transportLayer.register(username, email, password);
       runInAction(async () => {
@@ -72,10 +74,6 @@ class AuthStore {
   constructor() {
     this.requestLayer = new RequestLayer();
     this.transportLayer = new TransportLayer();
-
-    if (this.token) {
-      userStore.getCurrentUser();
-    }
 
     reaction(
       () => this.token,

@@ -99,4 +99,15 @@ export default class TransportLayer {
       throw err;
     }
   };
+
+  createComment = async (body, postId) => {
+    try {
+      const response = await axios.post(`/api/comments/${postId}`, {
+        body,
+      });
+      return response.data.comment;
+    } catch (err) {
+      throw err;
+    }
+  };
 }

@@ -38,7 +38,7 @@ export default class PostEditor extends Component {
     e.preventDefault();
     const postId = this.props.match.params.postId && parseInt(this.props.match.params.postId, 10);
     await this.props.postStore.submitPost(postId);
-    if (!this.props.postStore.errors) {
+    if (this.props.postStore.errors === undefined) {
       this.props.history.push(`/community/${this.props.match.params.communityId}/${postId ||
           this.props.postStore.currentPost.id}`);
     }

@@ -1,33 +1,33 @@
 import React, { Component, Fragment } from 'react';
-import { Card, Button, Divider, Loader, Comment, Header, Form, Image } from 'semantic-ui-react';
+import {
+  Card,
+  Button,
+  Divider,
+  Loader,
+  Comment,
+  Header,
+  Form,
+  Image,
+  Message,
+} from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
 import CommentsList from '../components/CommentsList';
 
-const comments = [
-  {
-    commentId: 1,
-    postId: 1,
-    username: 'Dummy User',
-    createdAt: new Date(),
-    body: 'dummy comment text',
-  },
-  {
-    commentId: 2,
-    postId: 1,
-    username: 'Dummy User2',
-    createdAt: new Date(),
-    body: 'dummy comment text2',
-  },
-];
-
-@inject('postStore', 'userStore')
+@inject('postStore', 'userStore', 'commentsStore')
 @observer
 export default class Post extends Component {
   async componentDidMount() {
     const postId = this.props.match.params.postId && parseInt(this.props.match.params.postId, 10);
-    await this.props.postStore.loadPost(postId);
+    Promise.all([
+      this.props.postStore.loadPost(postId),
+      this.props.commentsStore.fetchComments(postId),
+    ]);
+  }
+
+  componentWillUnmount() {
+    this.props.commentsStore.reset();
   }
 
   handleDeleteClick = async () => {
@@ -38,10 +38,21 @@ export default class Post extends Component {
     }
   };
 
+  handleCommentChange = e => this.props.commentsStore.setBody(e.target.value);
+
+  handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    const postId = this.props.match.params.postId && parseInt(this.props.match.params.postId, 10);
+    await this.props.commentsStore.createComment(postId);
+  };
+
   render() {
     const { currentPost, isLoading } = this.props.postStore;
     const { user } = this.props.userStore;
     const { communityId, postId } = this.props.match.params;
+    const {
+      comments, isFetchingComments, body, errorList, hasError,
+    } = this.props.commentsStore;
 
     if (isLoading) {
       return <Loader active />;
@@ -88,20 +99,37 @@ export default class Post extends Component {
           </Card>
         </Card.Group>
         <Divider section />
-        <Comment.Group>
-          <Header as="h3" dividing>
-            Comments
-          </Header>
-          {comments && comments.length > 0 ? (
-            <CommentsList comments={comments} />
-          ) : (
-            <p>No comments yet...</p>
-          )}
-          <Form reply>
-            <Form.TextArea />
-            <Button content="Add Reply" labelPosition="left" icon="edit" primary />
-          </Form>
-        </Comment.Group>
+        {isFetchingComments ? (
+          <Loader active />
+        ) : (
+          <Comment.Group>
+            <Header as="h3" dividing>
+              Comments
+            </Header>
+            {comments && comments.length > 0 ? (
+              <CommentsList comments={comments} />
+            ) : (
+              <p>No comments yet...</p>
+            )}
+            <Form reply onSubmit={this.handleCommentSubmit}>
+              <Form.TextArea
+                error={hasError}
+                value={body}
+                rows={5}
+                autoHeight
+                onChange={this.handleCommentChange}
+              />
+              <Form.Button content="Add Comment" labelPosition="left" icon="edit" primary />
+              {hasError && (
+                <Message
+                  error
+                  header="There was some errors with your submission"
+                  list={errorList}
+                />
+              )}
+            </Form>
+          </Comment.Group>
+        )}
       </Fragment>
     );
   }
