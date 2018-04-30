@@ -45,8 +45,8 @@ router.get('/', async (req, res) => {
     // If there was a filter passed, do a string pattern match query on title and body
     if (req.query.filter) {
       postsQuery
-        .where('title', 'like', `%${req.query.filter}%`)
-        .orWhere('body', 'like', `%${req.query.filter}%`);
+        .where('post.title', 'like', `%${req.query.filter}%`)
+        .orWhere('post.body', 'like', `%${req.query.filter}%`);
     }
 
     return res.json({ posts: await postsQuery });
