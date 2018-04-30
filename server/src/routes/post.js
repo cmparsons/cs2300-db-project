@@ -24,18 +24,22 @@ router.get('/', async (req, res) => {
     // Get all posts and join with user table to get poster's username
     // Left join with image_post table to find any posts with images
     // (and keep posts that don't have records in image_post)
+    // Left join to get all comments for posts and count number of comments
     const postsQuery = knex('post')
       .select(
         'post.id',
         'community_id as communityId',
-        'title',
-        'body',
+        'post.title',
+        'post.body',
         'username as poster',
         'post.created_at as createdAt',
         'url',
       )
       .innerJoin('user', 'poster_id', '=', 'user.id')
       .leftJoin('image_post', 'post.id', '=', 'image_post.post_id')
+      .leftJoin('comment', 'post.id', '=', 'comment.post_id')
+      .groupBy('post.id')
+      .count('comment.comment_id as commentsCount')
       .orderBy('post.created_at', 'desc');
 
     // If there was a filter passed, do a string pattern match query on title and body

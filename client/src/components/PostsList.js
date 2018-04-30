@@ -23,7 +23,8 @@ export default function PostList(props) {
             )}
           </Card.Content>
           <Card.Content textAlign="right" extra>
-            <Icon color="blue" name="comments" /> 121 Comments
+            <Icon color="blue" name="comments" />
+            {post.commentsCount === 1 ? '1 Comment' : `${post.commentsCount} Comments`}
           </Card.Content>
         </Card>
       ))}
