@@ -228,7 +228,20 @@ router.put('/:postId', async (req, res) => {
         body: req.body.body,
       });
 
-    if (post.url !== req.body.url) {
+    // Adding an image to the post
+    if (!post.url && req.body.url) {
+      await knex('image_post').insert({
+        post_id: req.params.postId,
+        url: req.body.url,
+        type: 'image',
+      });
+      // Removing an image from the post
+    } else if (post.url && !req.body.url) {
+      await knex('image_post')
+        .where('post_id', req.params.postId)
+        .del();
+      // Updating the image
+    } else if (post.url !== req.body.url) {
       await knex('image_post')
         .where('post_id', '=', req.params.postId)
         .update({
