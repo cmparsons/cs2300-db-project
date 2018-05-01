@@ -116,6 +116,7 @@ class AuthStore {
   @action
   logout() {
     this.setToken(undefined);
+    userStore.clearUser();
   }
 
   constructor() {
