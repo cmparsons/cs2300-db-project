@@ -115,7 +115,7 @@ class MessageStore {
         runInAction(() => {
           this.messages = this.messages.filter(message => this.selectedMessages.indexOf(message.id) === -1);
           this.selectedMessages = [];
-          uiStore.addAlertMessage('Success!', 'Successfully deleted post!', 'success');
+          uiStore.addAlertMessage('Success!', 'Successfully deleted message!', 'success');
           this.isLoading = false;
         });
       } catch (err) {
@@ -123,7 +123,7 @@ class MessageStore {
           console.log(err);
           uiStore.addAlertMessage(
             'Uh-oh!',
-            'Something happened and your post could not be deleted!',
+            'Something happened and your message could not be deleted!',
             'negative',
           );
           this.isLoading = false;
