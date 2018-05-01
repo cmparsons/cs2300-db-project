@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Button, Icon, Grid, List, Header, Segment, Loader } from 'semantic-ui-react';
+import { Button, Grid, Loader } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
@@ -51,6 +51,11 @@ export default class Home extends Component {
               iconColor="red"
               items={topCommunitiesLeaderboard}
             />
+            {communityId && (
+              <div style={{ paddingTop: 10 }}>
+                <Button primary content="Make Post" as={Link} to={`/post-editor/${communityId}`} />
+              </div>
+            )}
           </Grid.Column>
           <Grid.Column width={8}>
             <PostsList
@@ -58,59 +63,7 @@ export default class Home extends Component {
               communityName={this.props.communityStore.getCommunityName(communityId)}
             />
           </Grid.Column>
-          <Grid.Column width={4}>
-            <Header as="h3" attached="top" block>
-              <Icon color="red" name="fire" />
-              Trending
-            </Header>
-            <Segment attached>
-              <List divided verticalAlign="middle">
-                <List.Item>
-                  <List.Content>
-                    <List.Header as="a">Daniel Louise</List.Header>
-                  </List.Content>
-                </List.Item>
-                <List.Item>
-                  <List.Content>
-                    <List.Header as="a">Stevie Feliciano</List.Header>
-                  </List.Content>
-                </List.Item>
-                <List.Item>
-                  <List.Content>
-                    <List.Header as="a">Elliot Fu</List.Header>
-                  </List.Content>
-                </List.Item>
-              </List>
-            </Segment>
-            <Header as="h3" attached="top" block>
-              <Icon color="red" name="fire" />
-              Trending
-            </Header>
-            <Segment attached>
-              <List divided verticalAlign="middle">
-                <List.Item>
-                  <List.Content>
-                    <List.Header as="a">Daniel Louise</List.Header>
-                  </List.Content>
-                </List.Item>
-                <List.Item>
-                  <List.Content>
-                    <List.Header as="a">Stevie Feliciano</List.Header>
-                  </List.Content>
-                </List.Item>
-                <List.Item>
-                  <List.Content>
-                    <List.Header as="a">Elliot Fu</List.Header>
-                  </List.Content>
-                </List.Item>
-              </List>
-            </Segment>
-            {communityId && (
-              <div style={{ paddingTop: 10 }}>
-                <Button primary content="Make Post" as={Link} to={`/post-editor/${communityId}`} />
-              </div>
-            )}
-          </Grid.Column>
+          <Grid.Column width={4} />
         </Grid>
       </Fragment>
     );
