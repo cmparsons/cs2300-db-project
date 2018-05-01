@@ -1,6 +1,6 @@
-# cs2300-project
+# CS 2300 Databases Project
 
-Databases project for CS2300 at Missouri S&T. The app is a basic social network site where users can make connect with other users by makeing relavent posts in communities and commenting on posts. Users also can direct message other users.
+Databases project for CS2300 at Missouri S&T. The app is a basic social network site where users can connect with other users by making relavent posts in communities and commenting on posts. Users also can direct message other users.
 
 The application was built using a React frontend and an Express + MySQL backend.
 
@@ -14,7 +14,7 @@ The application was built using a React frontend and an Express + MySQL backend.
 
 ## Requirements
 
-* A newer version of [Node](https://nodejs.org/en/) (LTS recommeneded)
+* A newer version of [Node](https://nodejs.org/en/) (Node 8.11.1 was used in development)
 * [Git](https://git-scm.com/)
 * [MySQL](https://www.mysql.com/)
 
